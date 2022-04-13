@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class RegisterController {
     @Autowired
@@ -20,9 +22,9 @@ public class RegisterController {
     private UserConverter userConverter;
 
     @PostMapping(path = "user/registration")
-    public ResponseEntity<RegisterResponseDTO> registerUser(@RequestBody RegisterUserDTO newUSerDTO)
+    public ResponseEntity<RegisterResponseDTO> registerUser(@Valid @RequestBody RegisterUserDTO newUserDTO)
     {
-        AppUser user = userConverter.convertRegisterUserDTOToEntity(newUSerDTO);
+        AppUser user = userConverter.convertRegisterUserDTOToEntity(newUserDTO);
         RegisterResponseDTO responseDTO = new RegisterResponseDTO();
 
         user = userService.save(user);
@@ -33,7 +35,7 @@ public class RegisterController {
 
 
 
-        return new ResponseEntity<RegisterResponseDTO>(responseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
     }
 }
