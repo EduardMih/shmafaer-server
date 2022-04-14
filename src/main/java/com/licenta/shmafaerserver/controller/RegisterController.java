@@ -4,6 +4,7 @@ import com.licenta.shmafaerserver.converter.UserConverter;
 import com.licenta.shmafaerserver.dto.RegisterResponseDTO;
 import com.licenta.shmafaerserver.dto.RegisterUserDTO;
 import com.licenta.shmafaerserver.model.AppUser;
+import com.licenta.shmafaerserver.service.RegisterService;
 import com.licenta.shmafaerserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import javax.validation.Valid;
 @RestController
 public class RegisterController {
     @Autowired
-    private UserService userService;
+    private RegisterService registerService;
     @Autowired
     private UserConverter userConverter;
 
@@ -27,13 +28,11 @@ public class RegisterController {
         AppUser user = userConverter.convertRegisterUserDTOToEntity(newUserDTO);
         RegisterResponseDTO responseDTO = new RegisterResponseDTO();
 
-        user = userService.save(user);
+        user = registerService.registerNewUser(user);
 
         responseDTO.setFirstname(user.getFirstname());
         responseDTO.setLastname(user.getLastname());
         responseDTO.setMessage("Success");
-
-
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 

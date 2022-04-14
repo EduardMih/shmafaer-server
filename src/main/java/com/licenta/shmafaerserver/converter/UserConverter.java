@@ -1,7 +1,9 @@
 package com.licenta.shmafaerserver.converter;
 
+import com.licenta.shmafaerserver.dto.LoginRequestDTO;
 import com.licenta.shmafaerserver.dto.RegisterUserDTO;
 import com.licenta.shmafaerserver.model.AppUser;
+import com.licenta.shmafaerserver.model.ERole;
 import com.licenta.shmafaerserver.model.Role;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
@@ -27,9 +29,16 @@ public class UserConverter {
         List<Role> userRoles = new ArrayList<>();
 
         registerUserDTO.getRoleName().
-                forEach(roleName -> user.getRoles().add(roleRepository.findRoleByName(roleName)));
+                forEach(roleName -> user.getRoles().add(roleRepository.findRoleByName(ERole.valueOf(roleName))));
 
         return user;
+
+    }
+
+    public AppUser convertLoginRequestDTOToEntity(LoginRequestDTO loginRequestDTO)
+    {
+
+        return modelMapper.map(loginRequestDTO, AppUser.class);
 
     }
 }
