@@ -4,15 +4,13 @@ import com.licenta.shmafaerserver.dto.LoginRequestDTO;
 import com.licenta.shmafaerserver.dto.RegisterUserDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.ERole;
-import com.licenta.shmafaerserver.model.Role;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class UserConverter {
@@ -25,11 +23,12 @@ public class UserConverter {
 
     public AppUser convertRegisterUserDTOToEntity(RegisterUserDTO registerUserDTO)
     {
-        AppUser user = modelMapper.map(registerUserDTO, AppUser.class);
-        List<Role> userRoles = new ArrayList<>();
+        AppUser user;
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        registerUserDTO.getRoleName().
-                forEach(roleName -> user.getRoles().add(roleRepository.findRoleByName(ERole.valueOf(roleName))));
+        user = modelMapper.map(registerUserDTO, AppUser.class);
+
+        user.getRoles().add(roleRepository.findRoleByName(ERole.valueOf(registerUserDTO.getRoleName())));
 
         return user;
 

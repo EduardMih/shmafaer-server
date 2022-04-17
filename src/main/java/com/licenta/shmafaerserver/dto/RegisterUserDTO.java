@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor @Setter @Getter
 @PasswordsMatch(
@@ -29,10 +28,12 @@ public class RegisterUserDTO {
     @Email(message = "Email must have a valid format")
     private String email;
 
+    private String institutionalID;
+
     @NotBlank(message = "Password can not be empty")
     @ValidPassword
     private String password;
     private String confirmPassword;
 
-    private List<String> roleName;
+    private String roleName;
 }

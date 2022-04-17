@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class AppUser {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -33,6 +32,9 @@ public class AppUser {
     @NotBlank
     @Column(unique = true)
     private String email;
+
+    @Column(unique = true)
+    private String institutionalID;
 
     @NotBlank
     @Size(min = 5, max = 120)

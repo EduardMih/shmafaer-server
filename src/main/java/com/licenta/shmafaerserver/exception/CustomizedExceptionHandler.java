@@ -1,5 +1,9 @@
 package com.licenta.shmafaerserver.exception;
 
+import com.licenta.shmafaerserver.exception.CustomExceptions.AbstractCustomException;
+import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidRegisterRole;
+import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
+import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @ControllerAdvice
 public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
@@ -37,6 +42,44 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
+
+    @ExceptionHandler(InvalidRegisterRole.class)
+    public ResponseEntity<Object> handleInvalidRegisterRole(InvalidRegisterRole ex)
+    {
+
+        return new ResponseEntity<>(customExceptionToResponse(ex, "Register"), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(UserAlreadyExists.class)
+    public ResponseEntity<Object> handleUserAlreadyExists(UserAlreadyExists ex)
+    {
+
+        return new ResponseEntity<>(customExceptionToResponse(ex, "Register"), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(InvalidStudentID.class)
+    public ResponseEntity<Object> handleInvalidStudentID(InvalidStudentID ex)
+    {
+
+        return new ResponseEntity<>(customExceptionToResponse(ex, "Register"), HttpStatus.BAD_REQUEST);
+
+    }
+
+
+    private ExceptionResponse customExceptionToResponse(AbstractCustomException ex, String errorKey)
+    {
+        ExceptionResponse response = new ExceptionResponse();
+
+        response.getErrors().put(errorKey, ex.getMessage());
+
+        response.setDateTime(LocalDateTime.now());
+
+        return response;
+
+    }
+
 
 
 }
