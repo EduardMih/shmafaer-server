@@ -11,6 +11,8 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 
 @Component
 public class UserConverter {
@@ -27,6 +29,11 @@ public class UserConverter {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         user = modelMapper.map(registerUserDTO, AppUser.class);
+
+        if(Objects.equals(user.getInstitutionalID().trim(),""))
+        {
+            user.setInstitutionalID(null);
+        }
 
         user.getRoles().add(roleRepository.findRoleByName(ERole.valueOf(registerUserDTO.getRoleName())));
 
