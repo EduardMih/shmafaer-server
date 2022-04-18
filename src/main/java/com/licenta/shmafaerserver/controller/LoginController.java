@@ -1,6 +1,7 @@
 package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
+import com.licenta.shmafaerserver.dto.JwtResponseDTO;
 import com.licenta.shmafaerserver.dto.LoginRequestDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.service.LoginService;
@@ -23,11 +24,11 @@ public class LoginController {
     private final UserConverter userConverter;
 
     @PostMapping
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO)
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO)
     {
-        String jwtToken = loginService.loginUser(userConverter.convertLoginRequestDTOToEntity(loginRequestDTO));
+        JwtResponseDTO jwtResponseDTO = loginService.loginUser(userConverter.convertLoginRequestDTOToEntity(loginRequestDTO));
 
-        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
+        return new ResponseEntity<>(jwtResponseDTO, HttpStatus.OK);
 
     }
 }

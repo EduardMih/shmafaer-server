@@ -1,5 +1,6 @@
 package com.licenta.shmafaerserver.service;
 
+import com.licenta.shmafaerserver.dto.JwtResponseDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.security.jwt.JwtUtils;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
@@ -20,7 +21,7 @@ public class LoginService {
     private final AuthenticationManager authMan;
     private final JwtUtils jwtUtils;
 
-    public String loginUser(AppUser user)
+    public JwtResponseDTO loginUser(AppUser user)
     {
         Authentication auth = authMan.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
@@ -28,19 +29,24 @@ public class LoginService {
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        return generateJWTToken(auth);
+        return generateJWTResponse(auth);
 
     }
 
-    private String generateJWTToken(Authentication authentication)
+    private JwtResponseDTO generateJWTResponse(Authentication authentication)
     {
+        JwtResponseDTO jwtResponseDTO = new JwtResponseDTO();
         //add more details like roles to token
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(elem -> elem.getAuthority())
                 .collect(Collectors.toList());
 
-        return jwtUtils.generateJWTToken(authentication);
+        jwtResponseDTO.setJwtToken(jwtUtils.generateJWTToken(authentication));
+        jwtResponseDTO.setFirstname(userDetails.getFirstname());
+        jwtResponseDTO.setLastname(userDetails.getLastname());
+
+        return jwtResponseDTO;
 
     }
 }
