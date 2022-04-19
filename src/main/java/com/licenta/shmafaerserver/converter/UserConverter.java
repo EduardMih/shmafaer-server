@@ -2,14 +2,17 @@ package com.licenta.shmafaerserver.converter;
 
 import com.licenta.shmafaerserver.dto.request.LoginRequestDTO;
 import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
+import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 
@@ -44,6 +47,29 @@ public class UserConverter {
     {
 
         return modelMapper.map(loginRequestDTO, AppUser.class);
+
+    }
+
+    public UserDetailsDTO convertAppUserToDetailsDTO(AppUser user)
+    {
+        UserDetailsDTO userDetailsDTO;
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        TypeMap<AppUser, UserDetailsDTO> typeMap = modelMapper.getTypeMap(AppUser.class, UserDetailsDTO.class);
+
+        if(typeMap == null)
+        {
+            typeMap = modelMapper.createTypeMap(AppUser.class, UserDetailsDTO.class);
+        }
+
+        typeMap.addMappings(mapper -> mapper.skip(UserDetailsDTO::setRoles));
+        userDetailsDTO = modelMapper.map(user, UserDetailsDTO.class);
+
+
+
+        userDetailsDTO.setRoles(new HashSet<>());
+        user.getRoles().forEach(role -> userDetailsDTO.getRoles().add(role.getName().name()));
+
+        return userDetailsDTO;
 
     }
 }
