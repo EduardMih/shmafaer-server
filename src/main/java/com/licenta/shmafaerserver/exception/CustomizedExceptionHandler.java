@@ -1,9 +1,6 @@
 package com.licenta.shmafaerserver.exception;
 
-import com.licenta.shmafaerserver.exception.CustomExceptions.AbstractCustomException;
-import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidRegisterRole;
-import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
-import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
+import com.licenta.shmafaerserver.exception.CustomExceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +64,17 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler({InvalidProjectStructure.class,
+            UnknownUserEmail.class,
+            UnknownProjectType.class,
+            ProjectLinkAlreadyExists.class})
+    public ResponseEntity<Object> handleAddProjectExceptions(AbstractCustomException ex)
+    {
+
+        return new ResponseEntity<>(customExceptionToResponse(ex, "addProject"), HttpStatus.BAD_REQUEST);
+
+    }
+
 
     private ExceptionResponse customExceptionToResponse(AbstractCustomException ex, String errorKey)
     {
@@ -79,7 +87,4 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
         return response;
 
     }
-
-
-
 }
