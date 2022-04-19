@@ -1,12 +1,11 @@
 package com.licenta.shmafaerserver.service;
 
-import com.licenta.shmafaerserver.dto.JwtResponseDTO;
+import com.licenta.shmafaerserver.dto.response.JwtResponseDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.security.jwt.JwtUtils;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

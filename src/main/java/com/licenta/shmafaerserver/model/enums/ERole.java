@@ -1,4 +1,4 @@
-package com.licenta.shmafaerserver.model;
+package com.licenta.shmafaerserver.model.enums;
 
 public enum ERole {
     USER,

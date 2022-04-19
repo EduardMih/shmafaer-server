@@ -1,11 +1,10 @@
 package com.licenta.shmafaerserver.controller;
 
-import com.licenta.shmafaerserver.dto.requests.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
 import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
-import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

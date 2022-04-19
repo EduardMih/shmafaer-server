@@ -1,5 +1,6 @@
 package com.licenta.shmafaerserver.model;
 
+import com.licenta.shmafaerserver.model.enums.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

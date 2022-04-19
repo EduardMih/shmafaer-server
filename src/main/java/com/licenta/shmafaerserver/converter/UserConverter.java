@@ -1,12 +1,11 @@
 package com.licenta.shmafaerserver.converter;
 
-import com.licenta.shmafaerserver.dto.LoginRequestDTO;
-import com.licenta.shmafaerserver.dto.RegisterUserDTO;
+import com.licenta.shmafaerserver.dto.request.LoginRequestDTO;
+import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
 import com.licenta.shmafaerserver.model.AppUser;
-import com.licenta.shmafaerserver.model.ERole;
+import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.licenta.shmafaerserver.dto;
+package com.licenta.shmafaerserver.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

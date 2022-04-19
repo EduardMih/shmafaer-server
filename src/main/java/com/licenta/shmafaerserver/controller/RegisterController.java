@@ -1,14 +1,13 @@
 package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
-import com.licenta.shmafaerserver.dto.RegisterResponseDTO;
-import com.licenta.shmafaerserver.dto.RegisterUserDTO;
+import com.licenta.shmafaerserver.dto.response.RegisterResponseDTO;
+import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidRegisterRole;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.service.RegisterService;
-import com.licenta.shmafaerserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.licenta.shmafaerserver.repository;
 
-import com.licenta.shmafaerserver.model.EProjectType;
+import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.ProjectType;
 import org.springframework.data.jpa.repository.JpaRepository;
 

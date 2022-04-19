@@ -4,7 +4,7 @@ import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidRegisterRole
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
 import com.licenta.shmafaerserver.model.AppUser;
-import com.licenta.shmafaerserver.model.ERole;
+import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Role;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;

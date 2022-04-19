@@ -1,6 +1,6 @@
 package com.licenta.shmafaerserver.repository;
 
-import com.licenta.shmafaerserver.model.ERole;
+import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 

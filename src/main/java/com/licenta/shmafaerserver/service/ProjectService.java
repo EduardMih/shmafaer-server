@@ -1,13 +1,13 @@
 package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.ProjectConverter;
-import com.licenta.shmafaerserver.dto.requests.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
 import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
-import com.licenta.shmafaerserver.model.EProjectType;
-import com.licenta.shmafaerserver.model.ERole;
+import com.licenta.shmafaerserver.model.enums.EProjectType;
+import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.repository.ProjectRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;

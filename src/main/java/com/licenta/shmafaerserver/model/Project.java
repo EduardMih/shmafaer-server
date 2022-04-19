@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -42,5 +43,5 @@ public class Project {
     private AppUser coordinator;
 
     @ManyToMany (fetch = FetchType.EAGER)
-    private Set<AppUser> collaborators;
+    private Set<AppUser> collaborators = new HashSet<>();
 }

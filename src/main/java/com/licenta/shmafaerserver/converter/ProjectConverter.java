@@ -1,10 +1,10 @@
 package com.licenta.shmafaerserver.converter;
 
-import com.licenta.shmafaerserver.dto.requests.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
-import com.licenta.shmafaerserver.model.EProjectStatus;
-import com.licenta.shmafaerserver.model.EProjectType;
+import com.licenta.shmafaerserver.model.enums.EProjectStatus;
+import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.repository.ProjectStatusRepository;
