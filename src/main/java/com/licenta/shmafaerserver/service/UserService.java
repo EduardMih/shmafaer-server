@@ -1,6 +1,7 @@
 package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
+import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.model.AppUser;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
@@ -53,4 +55,38 @@ public class UserService {
         return result;
 
     }
+
+    public List<LiveSearchUserDTO> getLiveSearchResults(String namePattern, String role) throws InvalidUserRole
+    {
+        Role roleToSearch;
+        List<LiveSearchUserDTO> result = new ArrayList<>();
+
+        if(role == null)
+        {
+            userRepository.findDistinctByFirstnameContainingOrLastnameContaining(namePattern.toLowerCase(), namePattern.toLowerCase()).forEach(user -> {
+                result.add(userConverter.convertAppUserToLiveSearchDTO(user));
+            });
+        }
+
+        else
+
+        {
+            try
+            {
+                roleToSearch = roleRepository.findRoleByName(ERole.valueOf(role));
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new InvalidUserRole();
+            }
+
+            userRepository.findByNamePatternAndRole(namePattern.toLowerCase(), namePattern.toLowerCase(), Arrays.asList(roleToSearch)).forEach(user -> {
+                result.add(userConverter.convertAppUserToLiveSearchDTO(user));
+            });
+        }
+
+        return result;
+
+    }
+
 }

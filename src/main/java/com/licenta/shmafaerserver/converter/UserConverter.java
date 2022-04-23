@@ -2,6 +2,7 @@ package com.licenta.shmafaerserver.converter;
 
 import com.licenta.shmafaerserver.dto.request.LoginRequestDTO;
 import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
+import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.enums.ERole;
@@ -70,6 +71,14 @@ public class UserConverter {
         user.getRoles().forEach(role -> userDetailsDTO.getRoles().add(role.getName().name()));
 
         return userDetailsDTO;
+
+    }
+
+    public LiveSearchUserDTO convertAppUserToLiveSearchDTO(AppUser user)
+    {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        return modelMapper.map(user, LiveSearchUserDTO.class);
 
     }
 }

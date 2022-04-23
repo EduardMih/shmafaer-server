@@ -1,5 +1,6 @@
 package com.licenta.shmafaerserver.controller;
 
+import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.model.AppUser;
@@ -19,12 +20,14 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<Object> getUsersByRole(@RequestParam(name = "role") String role)
+    @GetMapping("/search")
+    public ResponseEntity<Object> liveSearchUser(@RequestParam(name = "namePattern") String namePattern,
+                                                 @RequestParam(name = "role", required = false) String role)
             throws InvalidUserRole
     {
-        List<UserDetailsDTO> users = userService.getUsersByRoles(List.of(role));
+        List<LiveSearchUserDTO> users = userService.getLiveSearchResults(namePattern, role);
 
         return new ResponseEntity<>(users, HttpStatus.OK);
+
     }
 }
