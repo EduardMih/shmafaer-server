@@ -11,18 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 @ControllerAdvice
 public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 
-    //@ExceptionHandler(ConstraintViolationException.class)
-    //public void handler(ConstraintViolationException ex)
-    //{
-        //System.out.println("AICI");
-   //}
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ExceptionResponse response = new ExceptionResponse();
@@ -71,7 +64,7 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAddProjectExceptions(AbstractCustomException ex)
     {
 
-        return new ResponseEntity<>(customExceptionToResponse(ex, "addProject"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(customExceptionToResponse(ex, "errorMessage"), HttpStatus.BAD_REQUEST);
 
     }
 

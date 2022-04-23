@@ -1,6 +1,7 @@
 package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.response.SuccessResponse;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
 import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
@@ -27,7 +28,7 @@ public class ProjectController {
     {
         projectService.saveProject(newProject);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(new SuccessResponse("Project created successfully"), HttpStatus.CREATED);
 
     }
 }

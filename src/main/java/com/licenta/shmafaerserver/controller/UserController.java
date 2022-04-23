@@ -6,6 +6,7 @@ import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -26,6 +28,7 @@ public class UserController {
             throws InvalidUserRole
     {
         List<LiveSearchUserDTO> users = userService.getLiveSearchResults(namePattern, role);
+        log.info("cautat " + namePattern);
 
         return new ResponseEntity<>(users, HttpStatus.OK);
 
