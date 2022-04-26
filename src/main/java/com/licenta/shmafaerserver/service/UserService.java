@@ -11,6 +11,8 @@ import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -84,6 +86,28 @@ public class UserService {
                 result.add(userConverter.convertAppUserToLiveSearchDTO(user));
             });
         }
+
+        return result;
+
+    }
+
+    public List<UserDetailsDTO> getAllUsers(Pageable pageable)
+    {
+        List<AppUser> users = userRepository.findAll(pageable).getContent();
+        List<UserDetailsDTO> result = new ArrayList<>();
+
+        users.forEach((user) -> result.add(userConverter.convertAppUserToDetailsDTO(user)));
+
+        return result;
+
+    }
+
+    public List<UserDetailsDTO> getAllUsersByEmail(String email, Pageable pageable)
+    {
+        List<AppUser> users = userRepository.findDistinctByEmailContaining(email, pageable).getContent();
+        List<UserDetailsDTO> result = new ArrayList<>();
+
+        users.forEach((user) -> result.add(userConverter.convertAppUserToDetailsDTO(user)));
 
         return result;
 

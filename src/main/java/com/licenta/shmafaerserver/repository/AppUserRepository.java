@@ -2,6 +2,8 @@ package com.licenta.shmafaerserver.repository;
 
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     List<AppUser> findByNamePatternAndRole(@Param("firstnamePattern") String firstnamePattern,
                                            @Param("lastnamePattern") String lastnamePattern,
                                            @Param("roles") Collection<Role> roles);
+
+    Page<AppUser> findAll(Pageable pageable);
+    Page<AppUser> findDistinctByEmailContaining(String email, Pageable pageable);
 }

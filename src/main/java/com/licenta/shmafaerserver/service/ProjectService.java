@@ -67,7 +67,8 @@ public class ProjectService {
                 throw new InvalidProjectStructure("Academic research projects must have collaborators set");
             }
 
-            if((newProject.getOwnerEmail() != null) || (newProject.getCoordinatorEmail() != null))
+            //if((newProject.getOwnerEmail() != null) || (newProject.getCoordinatorEmail() != null))
+            if(newProject.getCoordinatorEmail() != null)
             {
                 throw new InvalidProjectStructure("Academic research projects can't have coordinator or owner");
             }
