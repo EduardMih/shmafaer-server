@@ -46,6 +46,7 @@ public class LoginService {
         jwtResponseDTO.setJwtToken(jwtUtils.generateJWTToken(authentication));
         jwtResponseDTO.setFirstname(userDetails.getFirstname());
         jwtResponseDTO.setLastname(userDetails.getLastname());
+        jwtResponseDTO.setEmail(userDetails.getUsername());
         jwtResponseDTO.setRoles(new HashSet<>(roles));
 
         return jwtResponseDTO;
