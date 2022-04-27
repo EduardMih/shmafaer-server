@@ -5,12 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor @Setter @Getter
-public class JwtResponseDTO {
-    private String jwtToken;
-    private String firstname;
-    private String lastname;
-    private Set<String> roles;
+public class GetUsersResponseDTO {
+    private long nrOfUsers;
+    List<UserDetailsDTO> users;
 }

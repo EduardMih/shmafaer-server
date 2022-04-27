@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service @RequiredArgsConstructor @Slf4j
@@ -44,6 +46,7 @@ public class LoginService {
         jwtResponseDTO.setJwtToken(jwtUtils.generateJWTToken(authentication));
         jwtResponseDTO.setFirstname(userDetails.getFirstname());
         jwtResponseDTO.setLastname(userDetails.getLastname());
+        jwtResponseDTO.setRoles(new HashSet<>(roles));
 
         return jwtResponseDTO;
 

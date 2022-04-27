@@ -1,6 +1,7 @@
 package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
+import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
 import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
@@ -91,23 +92,30 @@ public class UserService {
 
     }
 
-    public List<UserDetailsDTO> getAllUsers(Pageable pageable)
+    public GetUsersResponseDTO getAllUsers(Pageable pageable)
     {
-        List<AppUser> users = userRepository.findAll(pageable).getContent();
-        List<UserDetailsDTO> result = new ArrayList<>();
+        Page<AppUser> userPage = userRepository.findAll(pageable);
+        List<UserDetailsDTO> userDTOs= new ArrayList<>();
+        GetUsersResponseDTO result;
 
-        users.forEach((user) -> result.add(userConverter.convertAppUserToDetailsDTO(user)));
+        userPage.getContent().forEach((user) -> userDTOs.add(userConverter.convertAppUserToDetailsDTO(user)));
+
+        result = new GetUsersResponseDTO(userPage.getTotalElements(), userDTOs);
 
         return result;
 
     }
 
-    public List<UserDetailsDTO> getAllUsersByEmail(String email, Pageable pageable)
+    public GetUsersResponseDTO getAllUsersByEmail(String email, Pageable pageable)
     {
-        List<AppUser> users = userRepository.findDistinctByEmailContaining(email, pageable).getContent();
-        List<UserDetailsDTO> result = new ArrayList<>();
+        Page<AppUser> userPage = userRepository.findDistinctByEmailContaining(email, pageable);
+        List<UserDetailsDTO> userDTOs = new ArrayList<>();
+        GetUsersResponseDTO result;
 
-        users.forEach((user) -> result.add(userConverter.convertAppUserToDetailsDTO(user)));
+        userPage.getContent().forEach((user) -> userDTOs.add(userConverter.convertAppUserToDetailsDTO(user)));
+
+        result = new GetUsersResponseDTO(userPage.getTotalElements(), userDTOs);
+
 
         return result;
 
