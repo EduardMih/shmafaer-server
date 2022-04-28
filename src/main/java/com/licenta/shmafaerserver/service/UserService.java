@@ -1,10 +1,12 @@
 package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
+import com.licenta.shmafaerserver.dto.request.UpdateUserRolesDTO;
 import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
 import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
+import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.Role;
 import com.licenta.shmafaerserver.model.enums.ERole;
@@ -118,6 +120,34 @@ public class UserService {
 
 
         return result;
+
+    }
+
+    @Transactional
+    public UserDetailsDTO updateUserRoles(UpdateUserRolesDTO updateUserRolesDTO) throws UnknownUserEmail, InvalidUserRole
+    {
+        AppUser user = userRepository.findAppUserByEmail(updateUserRolesDTO.getEmail())
+                .orElseThrow(UnknownUserEmail::new);
+        UserDetailsDTO response;
+
+        user.getRoles().clear();
+
+
+        try
+        {
+            updateUserRolesDTO.getNewRoles().forEach(role -> user.getRoles()
+                    .add(roleRepository.findRoleByName(ERole.valueOf(role))));
+        }
+        catch(IllegalArgumentException e)
+        {
+            throw new InvalidUserRole();
+        }
+
+        //userRepository.save(user);
+
+        response = userConverter.convertAppUserToDetailsDTO(user);
+
+        return response;
 
     }
 

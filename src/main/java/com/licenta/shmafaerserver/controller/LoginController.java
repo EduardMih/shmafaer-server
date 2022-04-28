@@ -13,7 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+        //, allowCredentials = "true")
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor

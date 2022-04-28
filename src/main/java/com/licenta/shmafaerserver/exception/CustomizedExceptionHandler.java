@@ -60,13 +60,17 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({InvalidProjectStructure.class,
             UnknownUserEmail.class,
             UnknownProjectType.class,
-            ProjectLinkAlreadyExists.class})
-    public ResponseEntity<Object> handleAddProjectExceptions(AbstractCustomException ex)
+            ProjectLinkAlreadyExists.class,
+            InvalidUserRole.class
+    })
+    public ResponseEntity<Object> handleCustomExceptions(AbstractCustomException ex)
     {
 
         return new ResponseEntity<>(customExceptionToResponse(ex, "errorMessage"), HttpStatus.BAD_REQUEST);
 
     }
+
+
 
 
     private ExceptionResponse customExceptionToResponse(AbstractCustomException ex, String errorKey)

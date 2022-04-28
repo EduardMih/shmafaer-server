@@ -1,9 +1,11 @@
 package com.licenta.shmafaerserver.controller;
 
+import com.licenta.shmafaerserver.dto.request.UpdateUserRolesDTO;
 import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
 import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
+import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
 import com.licenta.shmafaerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,16 @@ public class UserController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @PatchMapping("update/roles")
+    public ResponseEntity<Object> updateRoles(@RequestBody UpdateUserRolesDTO updateUserRolesDTO)
+            throws UnknownUserEmail, InvalidUserRole
+    {
+        UserDetailsDTO updatedUser = userService.updateUserRoles(updateUserRolesDTO);
+
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 
     }
 }
