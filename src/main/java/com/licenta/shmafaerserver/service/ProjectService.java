@@ -2,6 +2,7 @@ package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.ProjectConverter;
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
 import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
@@ -13,9 +14,12 @@ import com.licenta.shmafaerserver.repository.ProjectRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -85,6 +89,21 @@ public class ProjectService {
                 throw new InvalidProjectStructure("Project coordinator must have PROFESSOR role");
             }
         }
+    }
+
+    public GetProjectsResponseDTO getProjects(Pageable pageable)
+    {
+        Page<Project> projectsPage = projectRepository.findAll(pageable);
+        GetProjectsResponseDTO result = new GetProjectsResponseDTO(
+                projectsPage.getTotalElements(), new ArrayList<>()
+        );
+
+        projectsPage.getContent().forEach(project -> {
+            result.getProjects().add(projectConverter.convertEntityToProjectDataDTO(project));
+        });
+
+        return result;
+
     }
 
 }

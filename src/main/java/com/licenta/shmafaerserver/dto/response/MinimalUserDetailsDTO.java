@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor @NoArgsConstructor @Setter @Getter
-public class LiveSearchUserDTO {
+public class MinimalUserDetailsDTO {
     private String firstname;
     private String lastname;
     private String email;

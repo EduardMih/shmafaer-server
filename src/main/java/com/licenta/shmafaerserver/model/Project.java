@@ -20,10 +20,10 @@ public class Project {
     private Long id;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 200)
     private String title;
 
-    @Size(max = 500)
+    @Size(max = 1000)
     private String description;
 
     @NotBlank

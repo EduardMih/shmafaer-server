@@ -2,7 +2,7 @@ package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.dto.request.UpdateUserRolesDTO;
 import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
-import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
+import com.licenta.shmafaerserver.dto.response.MinimalUserDetailsDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
@@ -31,7 +31,7 @@ public class UserController {
                                                  @RequestParam(name = "role", required = false) String role)
             throws InvalidUserRole
     {
-        List<LiveSearchUserDTO> users = userService.getLiveSearchResults(namePattern, role);
+        List<MinimalUserDetailsDTO> users = userService.getLiveSearchResults(namePattern, role);
         log.info("cautat " + namePattern);
 
         return new ResponseEntity<>(users, HttpStatus.OK);

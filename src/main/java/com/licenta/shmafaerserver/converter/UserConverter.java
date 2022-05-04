@@ -2,7 +2,7 @@ package com.licenta.shmafaerserver.converter;
 
 import com.licenta.shmafaerserver.dto.request.LoginRequestDTO;
 import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
-import com.licenta.shmafaerserver.dto.response.LiveSearchUserDTO;
+import com.licenta.shmafaerserver.dto.response.MinimalUserDetailsDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.enums.ERole;
@@ -74,13 +74,15 @@ public class UserConverter {
 
     }
 
-    public LiveSearchUserDTO convertAppUserToLiveSearchDTO(AppUser user)
+    public MinimalUserDetailsDTO convertAppUserToLiveSearchDTO(AppUser user)
     {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        return modelMapper.map(user, LiveSearchUserDTO.class);
+        return modelMapper.map(user, MinimalUserDetailsDTO.class);
 
     }
+
+
 
 
 }

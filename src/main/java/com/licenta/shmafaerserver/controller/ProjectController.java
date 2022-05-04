@@ -1,6 +1,7 @@
 package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
 import com.licenta.shmafaerserver.dto.response.SuccessResponse;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
 import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
@@ -8,6 +9,8 @@ import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
 import com.licenta.shmafaerserver.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,18 @@ public class ProjectController {
         projectService.saveProject(newProject);
 
         return new ResponseEntity<>(new SuccessResponse("Project created successfully"), HttpStatus.CREATED);
+
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getProject(@RequestParam(name = "page", defaultValue = "0") int page,
+                                             @RequestParam(name = "size", defaultValue = "3") int size)
+    {
+
+        Pageable pageable = PageRequest.of(page, size);
+        GetProjectsResponseDTO result = projectService.getProjects(pageable);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 }
