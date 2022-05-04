@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     boolean existsByRepoLink(String link);
     Page<Project> findAll(Pageable pageable);
+    Page<Project> findDistinctByOwnerEmail(String email, Pageable pageable);
+    Page<Project> findDistinctByCoordinatorEmail(String email, Pageable pageable);
+    Page<Project> findDistinctByCollaboratorsEmail(String email, Pageable pageable);
 
 
 }

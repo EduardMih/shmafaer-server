@@ -46,4 +46,41 @@ public class ProjectController {
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
+
+    //by default owned projects if no other flags are specified
+    @GetMapping("/userProjects")
+    public ResponseEntity<Object> getUserProjects(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                  @RequestParam(name = "size", defaultValue = "3") int size,
+                                                  @RequestParam(name = "coordinated", defaultValue = "false", required = false) boolean coordinated,
+                                                  @RequestParam(name = "collaborated", defaultValue = "false", required = false) boolean collaborated)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+        GetProjectsResponseDTO result;
+
+        if(coordinated)
+        {
+            result = projectService.getCoordinatedProjects(pageable);
+        }
+
+        else
+        {
+
+            if (collaborated)
+            {
+                result = projectService.getCollaboratedProjects(pageable);
+            }
+
+            else
+
+            {
+
+                result = projectService.getUserProjects(pageable);
+
+            }
+
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
+    }
 }

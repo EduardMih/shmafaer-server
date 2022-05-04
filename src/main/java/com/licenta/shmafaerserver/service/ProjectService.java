@@ -12,10 +12,14 @@ import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.repository.ProjectRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
+import com.licenta.shmafaerserver.security.IAuthenticationFacade;
+import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,6 +32,7 @@ public class ProjectService {
     private final ProjectConverter projectConverter;
     private final ProjectRepository projectRepository;
     private final RoleRepository roleRepository;
+    private final IAuthenticationFacade authenticationFacade;
 
     public Project saveProject(AddProjectDTO newProject)
             throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
@@ -94,6 +99,43 @@ public class ProjectService {
     public GetProjectsResponseDTO getProjects(Pageable pageable)
     {
         Page<Project> projectsPage = projectRepository.findAll(pageable);
+
+        return buildGetProjectsResponseDTO(projectsPage);
+
+    }
+
+    public GetProjectsResponseDTO getUserProjects(Pageable pageable)
+    {
+        UserDetailsImpl userDetails = authenticationFacade.getAuthenticatedUser();
+
+        Page<Project> projectsPage = projectRepository.findDistinctByOwnerEmail(userDetails.getEmail(), pageable);
+
+        return buildGetProjectsResponseDTO(projectsPage);
+
+    }
+
+    public GetProjectsResponseDTO getCoordinatedProjects(Pageable pageable)
+    {
+        UserDetailsImpl userDetails = authenticationFacade.getAuthenticatedUser();
+
+        Page<Project> projectsPage = projectRepository.findDistinctByCoordinatorEmail(userDetails.getEmail(), pageable);
+
+        return buildGetProjectsResponseDTO(projectsPage);
+
+    }
+
+    public GetProjectsResponseDTO getCollaboratedProjects(Pageable pageable)
+    {
+        UserDetailsImpl userDetails = authenticationFacade.getAuthenticatedUser();
+
+        Page<Project> projectsPage = projectRepository.findDistinctByCollaboratorsEmail(userDetails.getEmail(), pageable);
+
+        return buildGetProjectsResponseDTO(projectsPage);
+
+    }
+
+    private GetProjectsResponseDTO buildGetProjectsResponseDTO(Page<Project> projectsPage)
+    {
         GetProjectsResponseDTO result = new GetProjectsResponseDTO(
                 projectsPage.getTotalElements(), new ArrayList<>()
         );
