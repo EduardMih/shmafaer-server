@@ -3,17 +3,19 @@ package com.licenta.shmafaerserver.service;
 import com.licenta.shmafaerserver.converter.ProjectConverter;
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
-import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
-import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
-import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
-import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
+import com.licenta.shmafaerserver.dto.response.ProjectDataDTO;
+import com.licenta.shmafaerserver.exception.CustomExceptions.*;
+import com.licenta.shmafaerserver.model.ProjectStatus;
+import com.licenta.shmafaerserver.model.enums.EProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.repository.ProjectRepository;
+import com.licenta.shmafaerserver.repository.ProjectStatusRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
 import com.licenta.shmafaerserver.security.IAuthenticationFacade;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
+import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +34,10 @@ public class ProjectService {
     private final ProjectConverter projectConverter;
     private final ProjectRepository projectRepository;
     private final RoleRepository roleRepository;
+    private final ProjectStatusRepository projectStatusRepository;
     private final IAuthenticationFacade authenticationFacade;
+
+    private final ArchivingService archivingService;
 
     public Project saveProject(AddProjectDTO newProject)
             throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
@@ -134,6 +139,23 @@ public class ProjectService {
 
     }
 
+    public ProjectDataDTO updateArchivingStatus(String repoLink) throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException
+    {
+        Project project = projectRepository.findByRepoLink(repoLink)
+                .orElseThrow(() -> new UnknownProjectRepoLink(repoLink));
+
+
+        EProjectStatus newStatusName = this.archivingService.getArchivingStatus(repoLink);
+
+        if((newStatusName != null) && (newStatusName != project.getStatus().getName()))
+        {
+            project.setStatus(this.projectStatusRepository.findByName(newStatusName));
+        }
+
+        return projectConverter.convertEntityToProjectDataDTO(project);
+
+    }
+
     private GetProjectsResponseDTO buildGetProjectsResponseDTO(Page<Project> projectsPage)
     {
         GetProjectsResponseDTO result = new GetProjectsResponseDTO(
@@ -147,5 +169,4 @@ public class ProjectService {
         return result;
 
     }
-
 }

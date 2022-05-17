@@ -9,6 +9,7 @@ import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor @Setter @Getter
 public class ProjectDataDTO {
+    private long id;
     private String title;
     private String repoLink;
     private String description;

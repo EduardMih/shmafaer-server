@@ -28,6 +28,7 @@ public class Project {
 
     @NotBlank
     @Size(max = 100)
+    @Column(unique = true)
     private String repoLink;
 
     @ManyToOne

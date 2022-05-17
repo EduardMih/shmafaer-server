@@ -1,13 +1,12 @@
 package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
+import com.licenta.shmafaerserver.dto.response.DownloadResponseDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
 import com.licenta.shmafaerserver.dto.response.SuccessResponse;
-import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidProjectStructure;
-import com.licenta.shmafaerserver.exception.CustomExceptions.ProjectLinkAlreadyExists;
-import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownProjectType;
-import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
+import com.licenta.shmafaerserver.exception.CustomExceptions.*;
 import com.licenta.shmafaerserver.service.ProjectService;
+import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +23,7 @@ import javax.validation.Valid;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ArchivingService archivingService;
 
     @PostMapping()
     public ResponseEntity<Object> addProject(@Valid @RequestBody AddProjectDTO newProject)
@@ -83,4 +83,23 @@ public class ProjectController {
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
+
+    @GetMapping("/archive")
+    public ResponseEntity<Object> getArchivingStatus(@RequestParam("projectRepoLink") String projectRepoLink)
+            throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException
+    {
+
+      return new ResponseEntity<>(projectService.updateArchivingStatus(projectRepoLink), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/archive/download")
+    public ResponseEntity<Object> downloadProject(@RequestParam String projectRepoLink) throws SoftwareHeritageCommunicationException
+    {
+        DownloadResponseDTO response = archivingService.getDownloadInfo(projectRepoLink);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
 }
