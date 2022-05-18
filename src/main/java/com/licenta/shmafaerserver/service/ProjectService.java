@@ -43,6 +43,10 @@ public class ProjectService {
             throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
     {
         Project project;
+        UserDetailsImpl authenticatedUser = (UserDetailsImpl) authenticationFacade.getAuthenticatedUser();
+
+        // project owner is the user adding the project
+        newProject.setOwnerEmail(authenticatedUser.getEmail());
 
         preValidateProjectDTO(newProject);
         project = projectConverter.convertAddProjectDTOToEntity(newProject);
@@ -146,6 +150,24 @@ public class ProjectService {
 
 
         EProjectStatus newStatusName = this.archivingService.getArchivingStatus(repoLink);
+
+        if((newStatusName != null) && (newStatusName != project.getStatus().getName()))
+        {
+            project.setStatus(this.projectStatusRepository.findByName(newStatusName));
+        }
+
+        return projectConverter.convertEntityToProjectDataDTO(project);
+
+    }
+
+    // should return same project with status changed to "pending" if everything goes ok
+    public ProjectDataDTO archiveProject(String repoLink) throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException
+    {
+        Project project = projectRepository.findByRepoLink(repoLink)
+                .orElseThrow(() -> new UnknownProjectRepoLink(repoLink));
+
+
+        EProjectStatus newStatusName = this.archivingService.sendArchivingRequest(repoLink);
 
         if((newStatusName != null) && (newStatusName != project.getStatus().getName()))
         {

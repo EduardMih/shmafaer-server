@@ -3,6 +3,7 @@ package com.licenta.shmafaerserver.controller;
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.dto.response.DownloadResponseDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
+import com.licenta.shmafaerserver.dto.response.ProjectDataDTO;
 import com.licenta.shmafaerserver.dto.response.SuccessResponse;
 import com.licenta.shmafaerserver.exception.CustomExceptions.*;
 import com.licenta.shmafaerserver.service.ProjectService;
@@ -90,6 +91,15 @@ public class ProjectController {
     {
 
       return new ResponseEntity<>(projectService.updateArchivingStatus(projectRepoLink), HttpStatus.OK);
+
+    }
+
+    @PostMapping("/archive")
+    public ResponseEntity<Object> archiveProject(@RequestParam("projectRepoLink") String projectRepoLink)
+            throws SoftwareHeritageCommunicationException, UnknownProjectRepoLink
+    {
+
+        return new ResponseEntity<>(projectService.archiveProject(projectRepoLink), HttpStatus.OK);
 
     }
 

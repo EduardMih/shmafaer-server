@@ -24,13 +24,37 @@ public class ArchivingService {
     private final static String BASE_SCHEME = "swh:1:";
     private final static String BASE_API = "https://archive.softwareheritage.org/api/1/";
 
-    private final String SAVE_ROUTE = "https://archive.softwareheritage.org/api/1/origin/save/git/url/";
+    private final static String SAVE_ROUTE = BASE_API + "origin/save/git/url/";
     private final RestTemplate restTemplate;
 
-    public EProjectStatus getArchivingStatus(String origin) throws SoftwareHeritageCommunicationException
+    public EProjectStatus sendArchivingRequest(String projectRepoLink) throws SoftwareHeritageCommunicationException
     {
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = URI.create(SAVE_ROUTE + origin);
+        URI uri = URI.create(SAVE_ROUTE + projectRepoLink + "/");
+        ResponseEntity<SaveResponse> response;
+        SaveResponse respBody;
+
+        try
+        {
+            response = restTemplate.postForEntity(uri, null, SaveResponse.class);
+            respBody = response.getBody();
+
+            if((respBody != null) && (Objects.equals(respBody.getSave_request_status(), "accepted")))
+            {
+
+                return convertStatus(respBody.getSave_task_status());
+
+            }
+            throw new SoftwareHeritageCommunicationException("Something went wrong!");
+        }
+        catch (HttpStatusCodeException e)
+        {
+            throw new SoftwareHeritageCommunicationException(e.getResponseBodyAsString());
+        }
+    }
+
+    public EProjectStatus getArchivingStatus(String projectRepoLink) throws SoftwareHeritageCommunicationException
+    {
+        URI uri = URI.create(SAVE_ROUTE + projectRepoLink + "/");
         String status;
 
         try
@@ -47,14 +71,12 @@ public class ArchivingService {
                return convertStatus(status);
 
             }
+            throw new SoftwareHeritageCommunicationException("Something went wrong!");
         }
         catch (HttpStatusCodeException e)
         {
             throw new SoftwareHeritageCommunicationException(e.getResponseBodyAsString());
         }
-
-        return null;
-
     }
 
     private EProjectStatus convertStatus(String status)
