@@ -10,6 +10,7 @@ import com.licenta.shmafaerserver.model.enums.EProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
+import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.repository.ProjectRepository;
 import com.licenta.shmafaerserver.repository.ProjectStatusRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
@@ -33,6 +34,7 @@ import java.util.Objects;
 public class ProjectService {
     private final ProjectConverter projectConverter;
     private final ProjectRepository projectRepository;
+    private final AppUserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ProjectStatusRepository projectStatusRepository;
     private final IAuthenticationFacade authenticationFacade;
@@ -46,22 +48,63 @@ public class ProjectService {
         UserDetailsImpl authenticatedUser = (UserDetailsImpl) authenticationFacade.getAuthenticatedUser();
 
         // project owner is the user adding the project
-        newProject.setOwnerEmail(authenticatedUser.getEmail());
+        //newProject.setOwnerEmail(authenticatedUser.getEmail());
 
         preValidateProjectDTO(newProject);
+
+        if(checkRepoLinkExists(newProject.getRepoLink()))
+        {
+            throw new ProjectLinkAlreadyExists();
+        }
+
         project = projectConverter.convertAddProjectDTOToEntity(newProject);
+        // project owner is the user adding the project
+        project.setOwner(userRepository.findAppUserByEmail(authenticatedUser.getEmail())
+                .orElseThrow(UnknownUserEmail::new));
         postValidateProject(project);
 
         return projectRepository.save(project);
 
     }
 
-    private void preValidateProjectDTO(AddProjectDTO newProject) throws InvalidProjectStructure, ProjectLinkAlreadyExists
+    public ProjectDataDTO updateProject(AddProjectDTO updatedProject, Long id)
+            throws UnknownProjectID, UnknownProjectType , UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
     {
+        Project project = projectRepository.findById(id).orElseThrow(
+                () -> new UnknownProjectID(Long.toString(id)));
+
+        preValidateProjectDTO(updatedProject);
+        if((!Objects.equals(project.getRepoLink(), updatedProject.getRepoLink()))
+                && (checkRepoLinkExists(updatedProject.getRepoLink())))
+        {
+            throw new ProjectLinkAlreadyExists();
+        }
+        // update project form DTO
+        project = projectConverter.updateEntityFromDTO(project, updatedProject);
+        postValidateProject(project);
+
+        project = projectRepository.save(project);
+
+        return projectConverter.convertEntityToProjectDataDTO(project);
+
+    }
+
+    private boolean checkRepoLinkExists(String repoLink)
+    {
+
+        return projectRepository.existsByRepoLink(repoLink);
+
+    }
+
+    private void preValidateProjectDTO(AddProjectDTO newProject) throws InvalidProjectStructure
+    {
+        /*
         if(projectRepository.existsByRepoLink(newProject.getRepoLink()))
         {
             throw new ProjectLinkAlreadyExists();
         }
+         */
+
         if((Objects.equals(newProject.getProjectType(), EProjectType.BACHELOR.name())) ||
                 (Objects.equals(newProject.getProjectType(), EProjectType.MASTERY.name())) ||
                 (Objects.equals(newProject.getProjectType(), EProjectType.DOCTORAL.name())))
@@ -71,10 +114,13 @@ public class ProjectService {
                 throw new InvalidProjectStructure("Project must have a coordinator");
             }
 
+            /*
             if((newProject.getOwnerEmail() == null) || (Objects.equals("", newProject.getOwnerEmail().trim())))
             {
                 throw new InvalidProjectStructure("Project must have a owner");
             }
+
+             */
         }
 
         else
@@ -103,6 +149,15 @@ public class ProjectService {
                 throw new InvalidProjectStructure("Project coordinator must have PROFESSOR role");
             }
         }
+    }
+
+    public ProjectDataDTO getProjectByID(Long id) throws UnknownProjectID
+    {
+        Project project = projectRepository.findById(id).orElseThrow(
+                () -> new UnknownProjectID(Long.toString(id)));
+
+        return projectConverter.convertEntityToProjectDataDTO(project);
+
     }
 
     public GetProjectsResponseDTO getProjects(Pageable pageable)

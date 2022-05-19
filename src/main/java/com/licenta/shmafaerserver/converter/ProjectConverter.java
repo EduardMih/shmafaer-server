@@ -18,6 +18,8 @@ import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component @RequiredArgsConstructor
 public class ProjectConverter {
     private final ModelMapper modelMapper;
@@ -48,13 +50,15 @@ public class ProjectConverter {
             throw new UnknownProjectType();
         }
 
-
+        /*
 
         if(newProject.getOwnerEmail() != null)
         {
             project.setOwner(userRepository.findAppUserByEmail(newProject.getOwnerEmail())
                     .orElseThrow(UnknownUserEmail::new));
         }
+
+         */
 
         if(newProject.getCoordinatorEmail() != null)
         {
@@ -64,6 +68,7 @@ public class ProjectConverter {
 
         if(newProject.getCollaboratorsEmail() != null)
         {
+            //project.getCollaborators().clear();
             for(String collaboratorEmail: newProject.getCollaboratorsEmail())
             {
                 project.getCollaborators().add(userRepository.findAppUserByEmail(collaboratorEmail)
@@ -110,6 +115,68 @@ public class ProjectConverter {
         result.setStatus(project.getStatus().getName().name());
 
         return result;
+
+    }
+
+    public Project updateEntityFromDTO(Project oldProject, AddProjectDTO newProject) throws UnknownProjectType, UnknownUserEmail
+    {
+        EProjectType type;
+
+        if(!Objects.equals(oldProject.getTitle(), newProject.getTitle()))
+        {
+            oldProject.setTitle(newProject.getTitle());
+        }
+
+        if(!Objects.equals(oldProject.getDescription(), newProject.getDescription()))
+        {
+            oldProject.setDescription(newProject.getDescription());
+        }
+
+        if(!Objects.equals(oldProject.getRepoLink(), newProject.getRepoLink()))
+        {
+            oldProject.setRepoLink(newProject.getRepoLink());
+        }
+
+        try
+        {
+            type = EProjectType.valueOf(newProject.getProjectType());
+            oldProject.setProjectType(projectTypeRepository.findByName(type)
+                    .orElseThrow(UnknownProjectType::new));
+
+            if(Objects.equals(oldProject.getProjectType().getName(), EProjectType.RESEARCH))
+            {
+                oldProject.setCoordinator(null);
+            }
+            else
+
+            {
+                oldProject.getCollaborators().clear();
+            }
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new UnknownProjectType();
+        }
+
+        if((newProject.getCoordinatorEmail() != null) &&
+                (!Objects.equals(newProject.getCoordinatorEmail(), oldProject.getCoordinator().getEmail())))
+        {
+            oldProject.setCoordinator(userRepository.findAppUserByEmail(newProject.getCoordinatorEmail())
+                    .orElseThrow(UnknownUserEmail::new));
+        }
+
+        if(newProject.getCollaboratorsEmail() != null)
+        {
+            oldProject.getCollaborators().clear();
+            for(String collaboratorEmail: newProject.getCollaboratorsEmail())
+            {
+                oldProject.getCollaborators().add(userRepository.findAppUserByEmail(collaboratorEmail)
+                        .orElseThrow(UnknownUserEmail::new));
+
+            }
+        }
+
+        return oldProject;
 
     }
 }

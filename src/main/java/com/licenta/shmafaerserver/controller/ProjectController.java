@@ -36,6 +36,24 @@ public class ProjectController {
 
     }
 
+    @PutMapping("/{projectID}")
+    public ResponseEntity<Object> updateProject(@Valid @RequestBody AddProjectDTO updatedProject,
+                                                @PathVariable Long projectID)
+            throws UnknownProjectID, UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
+    {
+
+        return new ResponseEntity<>(projectService.updateProject(updatedProject, projectID), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{projectID}")
+    public ResponseEntity<Object> getProjectByID(@PathVariable("projectID") Long projectID) throws UnknownProjectID
+    {
+
+        return new ResponseEntity<>(projectService.getProjectByID(projectID), HttpStatus.OK);
+
+    }
+
     @GetMapping
     public ResponseEntity<Object> getProject(@RequestParam(name = "page", defaultValue = "0") int page,
                                              @RequestParam(name = "size", defaultValue = "3") int size)

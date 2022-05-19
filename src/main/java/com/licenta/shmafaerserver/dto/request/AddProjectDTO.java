@@ -24,7 +24,7 @@ public class AddProjectDTO {
 
     private String projectType;
 
-    private String ownerEmail;
+    //private String ownerEmail;
 
     private String coordinatorEmail;
 
