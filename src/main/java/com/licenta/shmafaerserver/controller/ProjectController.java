@@ -3,7 +3,6 @@ package com.licenta.shmafaerserver.controller;
 import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.dto.response.DownloadResponseDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
-import com.licenta.shmafaerserver.dto.response.ProjectDataDTO;
 import com.licenta.shmafaerserver.dto.response.SuccessResponse;
 import com.licenta.shmafaerserver.exception.CustomExceptions.*;
 import com.licenta.shmafaerserver.service.ProjectService;
