@@ -5,24 +5,21 @@ import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
 import com.licenta.shmafaerserver.dto.response.ProjectDataDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.*;
-import com.licenta.shmafaerserver.model.ProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
-import com.licenta.shmafaerserver.repository.AppUserRepository;
-import com.licenta.shmafaerserver.repository.ProjectRepository;
-import com.licenta.shmafaerserver.repository.ProjectStatusRepository;
-import com.licenta.shmafaerserver.repository.RoleRepository;
+import com.licenta.shmafaerserver.repository.*;
 import com.licenta.shmafaerserver.security.IAuthenticationFacade;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
 import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
+import com.licenta.shmafaerserver.service.utils.ProjectSearchUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,6 +35,8 @@ public class ProjectService {
     private final RoleRepository roleRepository;
     private final ProjectStatusRepository projectStatusRepository;
     private final IAuthenticationFacade authenticationFacade;
+
+    private final ProjectSearchUtils projectSearchUtils;
 
     private final ArchivingService archivingService;
 
@@ -244,6 +243,21 @@ public class ProjectService {
         });
 
         return result;
+
+    }
+
+    public GetProjectsResponseDTO searchProjects(String titlePattern, String coordinatorEmail,
+                                        String contributorEmail, String projectType, Pageable pageable)
+            throws UnknownUserEmail, UnknownProjectType
+    {
+        Project projectToSearch = projectSearchUtils.buildProjectToSearch(titlePattern, coordinatorEmail,
+                contributorEmail, projectType);
+
+        Example<Project> example = projectSearchUtils.getExampleOf(projectToSearch);
+
+        Page<Project> projectsPage = projectRepository.findAll(example, pageable);
+
+        return buildGetProjectsResponseDTO(projectsPage);
 
     }
 }

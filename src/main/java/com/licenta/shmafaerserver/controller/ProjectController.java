@@ -104,6 +104,22 @@ public class ProjectController {
 
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchProjects(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                 @RequestParam(name = "size", defaultValue = "3") int size,
+                                                 @RequestParam(name = "titlePattern", required = false) String titlePattern,
+                                                 @RequestParam(name = "coordinator", required = false) String coordinatorEmail,
+                                                 @RequestParam(name = "contributor", required = false) String contributorEmail,
+                                                 @RequestParam(name = "projectType", defaultValue = "ALL", required = false) String projectType
+                                                 )
+            throws UnknownProjectType, UnknownUserEmail
+    {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return new ResponseEntity<>(projectService.searchProjects(titlePattern, coordinatorEmail, contributorEmail, projectType, pageable), HttpStatus.OK);
+
+    }
+
     @GetMapping("/archive")
     public ResponseEntity<Object> getArchivingStatus(@RequestParam("projectRepoLink") String projectRepoLink)
             throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException
