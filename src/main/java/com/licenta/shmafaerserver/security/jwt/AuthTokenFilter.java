@@ -52,7 +52,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
             catch (Exception e)
             {
-                log.error("Error authenticating user {}", e);
+                log.error("Error authenticating user {}", e.getMessage());
             }
 
         filterChain.doFilter(request, response);

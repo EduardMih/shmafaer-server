@@ -5,11 +5,14 @@ import com.licenta.shmafaerserver.dto.request.AddProjectDTO;
 import com.licenta.shmafaerserver.dto.response.GetProjectsResponseDTO;
 import com.licenta.shmafaerserver.dto.response.ProjectDataDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.*;
+import com.licenta.shmafaerserver.model.AppUser;
+import com.licenta.shmafaerserver.model.ProjectType;
 import com.licenta.shmafaerserver.model.enums.EProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectType;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.model.Project;
 import com.licenta.shmafaerserver.repository.*;
+import com.licenta.shmafaerserver.repository.specification.projectspec.ProjectSpecification;
 import com.licenta.shmafaerserver.security.IAuthenticationFacade;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
 import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -250,14 +254,39 @@ public class ProjectService {
                                         String contributorEmail, String projectType, Pageable pageable)
             throws UnknownUserEmail, UnknownProjectType
     {
-        Project projectToSearch = projectSearchUtils.buildProjectToSearch(titlePattern, coordinatorEmail,
-                contributorEmail, projectType);
 
-        Example<Project> example = projectSearchUtils.getExampleOf(projectToSearch);
+        /*
+        EProjectType type = projectSearchUtils.getTypeName(projectType);
+        Specification<Project> specification;
+        Page<Project> projectsPage;
 
-        Page<Project> projectsPage = projectRepository.findAll(example, pageable);
 
-        return buildGetProjectsResponseDTO(projectsPage);
+
+        if(type == EProjectType.RESEARCH)
+        {
+            specification = ProjectSearchUtils.buildResearchProjectSpec(titlePattern, contributorEmail);
+
+            projectsPage = projectRepository.findAll(specification, pageable);
+
+            return buildGetProjectsResponseDTO(projectsPage);
+
+        }
+
+        else
+        {
+
+            specification = ProjectSearchUtils.buildSchoolProjectSpec(titlePattern, contributorEmail, coordinatorEmail, type);
+            projectsPage = projectRepository.findAll(specification, pageable);
+
+            return buildGetProjectsResponseDTO(projectsPage);
+
+        }
+        */
+        EProjectType type = projectSearchUtils.getTypeName(projectType);
+        AppUser collaborator = userRepository.findAppUserByEmail(contributorEmail).orElse(null);
+        AppUser coordinator = userRepository.findAppUserByEmail(coordinatorEmail).orElse(null);
+
+        return buildGetProjectsResponseDTO(projectRepository.findThat(collaborator, coordinator, titlePattern, type, pageable));
 
     }
 }
