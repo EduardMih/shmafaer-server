@@ -2,6 +2,7 @@ package com.licenta.shmafaerserver.controller;
 
 import com.licenta.shmafaerserver.dto.request.ChangePasswordDTO;
 import com.licenta.shmafaerserver.dto.request.UpdateUserInfoDTO;
+import com.licenta.shmafaerserver.dto.response.JwtResponseDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidOldPassword;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
