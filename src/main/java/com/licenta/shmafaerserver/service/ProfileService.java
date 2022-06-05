@@ -69,6 +69,7 @@ public class ProfileService {
         }
 
         //((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setEmail(currentUser.getEmail());
+        //System.out.println(loginService.generateJWTResponse(SecurityContextHolder.getContext().getAuthentication()).getJwtToken());
 
 
         return userConverter.convertAppUserToDetailsDTO(currentUser);
