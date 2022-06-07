@@ -1,5 +1,6 @@
 package com.licenta.shmafaerserver.service.softwareheritage;
 
+import com.licenta.shmafaerserver.dto.github.SearchResultSimplifiedDTO;
 import com.licenta.shmafaerserver.dto.response.DownloadResponseDTO;
 import com.licenta.shmafaerserver.dto.softwareheritage.*;
 import com.licenta.shmafaerserver.exception.CustomExceptions.SoftwareHeritageCommunicationException;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -137,6 +139,35 @@ public class ArchivingService {
         {
             throw new SoftwareHeritageCommunicationException(e.getMessage());
         }
+    }
+
+    public boolean isArchivedBySH(String origin)
+    {
+        URI uri = URI.create(BASE_API + "origin/" + origin + "/get");
+
+        try
+        {
+            restTemplate.getForObject(uri, String.class);
+            log.info(Thread.currentThread().getName() + " " + origin + " -> FOUND ON SH");
+
+            return true;
+
+        }
+        catch(HttpStatusCodeException e)
+        {
+            if(e.getStatusCode() == HttpStatus.NOT_FOUND)
+            {
+
+                return false;
+
+            }
+
+            log.error("Could not check if github repo is archived " + origin);
+
+            return false;
+
+        }
+
     }
 
     private String getSnapshotID(String projectRepoLink) throws SoftwareHeritageCommunicationException

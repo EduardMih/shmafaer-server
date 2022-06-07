@@ -15,6 +15,9 @@ import com.licenta.shmafaerserver.repository.*;
 import com.licenta.shmafaerserver.repository.specification.projectspec.ProjectSpecification;
 import com.licenta.shmafaerserver.security.IAuthenticationFacade;
 import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
+import com.licenta.shmafaerserver.service.recommendation.RecommendationService;
+import com.licenta.shmafaerserver.service.recommendation.RecommendationServiceFacade;
+import com.licenta.shmafaerserver.service.recommendation.RecommendationTaskService;
 import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
 import com.licenta.shmafaerserver.service.utils.ProjectSearchUtils;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,7 @@ public class ProjectService {
     private final ProjectSearchUtils projectSearchUtils;
 
     private final ArchivingService archivingService;
+    private final RecommendationServiceFacade recommendationFacade;
 
     public Project saveProject(AddProjectDTO newProject)
             throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
@@ -285,6 +289,11 @@ public class ProjectService {
         EProjectType type = projectSearchUtils.getTypeName(projectType);
         AppUser collaborator = userRepository.findAppUserByEmail(contributorEmail).orElse(null);
         AppUser coordinator = userRepository.findAppUserByEmail(coordinatorEmail).orElse(null);
+
+        if((titlePattern != null) && (titlePattern.length() > 3))
+        {
+            recommendationFacade.createRecommendationTask(titlePattern);
+        }
 
         return buildGetProjectsResponseDTO(projectRepository.findThat(collaborator, coordinator, titlePattern, type, pageable));
 
