@@ -40,8 +40,4 @@ public class RecommendationServiceFacade {
         return  userRepository.findAppUserByEmail(userDetails.getEmail()).orElseThrow(UnknownUserEmail::new);
 
     }
-
-
-
-
 }

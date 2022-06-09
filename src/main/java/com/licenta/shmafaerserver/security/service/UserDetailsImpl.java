@@ -24,6 +24,7 @@ public class UserDetailsImpl implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+    private boolean enabled;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -39,6 +40,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getLastname(),
                 user.getEmail(),
                 user.getPassword(),
+                user.isEnabled(),
                 authorities
         );
 
@@ -80,7 +82,7 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled()
     {
 
-        return true;
+        return enabled;
 
     }
 

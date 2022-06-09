@@ -1,6 +1,5 @@
 package com.licenta.shmafaerserver.dto.request;
 
-
 import com.licenta.shmafaerserver.validator.PasswordsMatch;
 import com.licenta.shmafaerserver.validator.ValidPassword;
 import lombok.AllArgsConstructor;
