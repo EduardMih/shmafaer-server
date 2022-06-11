@@ -64,7 +64,9 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
             InvalidUserRole.class,
             SoftwareHeritageCommunicationException.class,
             UnknownProjectRepoLink.class,
-            InvalidOldPassword.class
+            InvalidOldPassword.class,
+            InvalidConfirmationToken.class,
+            InvalidPasswordResetToken.class
     })
     public ResponseEntity<Object> handleCustomExceptions(AbstractCustomException ex)
     {

@@ -2,6 +2,7 @@ package com.licenta.shmafaerserver.service.accountconfirmation;
 
 import com.licenta.shmafaerserver.dto.request.ConfirmAccountDTO;
 import com.licenta.shmafaerserver.dto.response.ConfirmAccountResponseDTO;
+import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidConfirmationToken;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.ConfirmationToken;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
@@ -40,7 +41,7 @@ public class AccountConfirmationService {
 
     }
 
-    public ConfirmAccountResponseDTO confirmAccount(ConfirmAccountDTO confirmAccountDTO)
+    public ConfirmAccountResponseDTO confirmAccount(ConfirmAccountDTO confirmAccountDTO) throws InvalidConfirmationToken
     {
         ConfirmAccountResponseDTO responseDTO = new ConfirmAccountResponseDTO();
         Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByToken(confirmAccountDTO.getToken());
@@ -56,11 +57,7 @@ public class AccountConfirmationService {
 
         }
 
-        responseDTO.setStatus("FAILED");
-        responseDTO.setMessage("Token is invalid or expired");
-
-        return responseDTO;
-
+        throw new InvalidConfirmationToken("Token has expired or is invalid");
     }
 
     private void enableAccount(AppUser user)
