@@ -77,7 +77,7 @@ public class RegisterService {
 
     private boolean checkStudentID(RegisterUserDTO newUserDTO)
     {
-        if(Objects.equals(newUserDTO.getRoleName(), ERole.USER.name()))
+        if(Objects.equals(newUserDTO.getRoleName(), ERole.STUDENT.name()))
         {
 
             return (newUserDTO.getInstitutionalID() != null) && (newUserDTO.getInstitutionalID().startsWith("310"));

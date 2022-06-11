@@ -28,5 +28,14 @@ public class AccountConfirmationController {
 
     }
 
-    //de facut si resend
+    @PostMapping("/resendToken")
+    public ResponseEntity<Object> resendConfirmationToken(@Valid @RequestBody ConfirmAccountDTO confirmAccountDTO)
+            throws InvalidConfirmationToken
+    {
+        ConfirmAccountResponseDTO response = accountConfirmationService.resendConfirmToken(confirmAccountDTO);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
 }

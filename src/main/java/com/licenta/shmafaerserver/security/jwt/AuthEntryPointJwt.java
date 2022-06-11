@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Component @Slf4j
 public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
@@ -21,9 +22,16 @@ public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
         Map<String, String> responseMes = new HashMap<>();
         log.error("Unauthorized error: {}", authException.getMessage());
         //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         responseMes.put("Error", "Bad credentials");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        if(Objects.equals(authException.getMessage(), "User is disabled"))
+        {
+            responseMes.put("Error", "Email was not confirmed");
+        }
+
         new ObjectMapper().writeValue(response.getOutputStream(), responseMes);
     }
 }

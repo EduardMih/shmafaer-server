@@ -28,16 +28,50 @@ public class AccountConfirmationService {
 
     public void sendConfirmToken(AppUser user)
     {
-        ConfirmationToken confirmationToken = ConfirmationTokenUtils.build(user);
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        Optional<ConfirmationToken> confirmationTokenOptional = confirmationTokenRepository.findByUser(user);
+        ConfirmationToken confirmationToken;
+
+        if(confirmationTokenOptional.isPresent())
+        {
+            confirmationToken = confirmationTokenOptional.get();
+            ConfirmationTokenUtils.updateToken(confirmationToken);
+        }
+
+        else
+
+        {
+            confirmationToken = ConfirmationTokenUtils.build(user);
+        }
 
         confirmationTokenRepository.save(confirmationToken);
 
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Complete Registration on SHMAFAER");
-        mailMessage.setText(CLIENT_BASE_URL + CONFIRM_ACCOUNT_PATH + "?token=" + confirmationToken.getToken());
+        sendTokenEmail(confirmationToken);
 
-        emailService.sendMail(mailMessage);
+    }
+
+    public ConfirmAccountResponseDTO resendConfirmToken(ConfirmAccountDTO confirmAccountDTO) throws InvalidConfirmationToken
+    {
+        ConfirmAccountResponseDTO responseDTO = new ConfirmAccountResponseDTO();
+        Optional<ConfirmationToken> tokenOptional = confirmationTokenRepository.findByToken(confirmAccountDTO.getToken());
+        ConfirmationToken token = new ConfirmationToken();
+
+
+        if((tokenOptional.isPresent()) && (tokenOptional.get().getExpiryDate().isBefore(LocalDateTime.now())))
+        {
+            token = tokenOptional.get();
+            ConfirmationTokenUtils.updateToken(token);
+            confirmationTokenRepository.save(token);
+
+            responseDTO.setStatus("OK");
+            responseDTO.setMessage("Token resent! Check your email!");
+
+            sendTokenEmail(token);
+
+            return responseDTO;
+
+        }
+
+        throw new InvalidConfirmationToken("Token is invalid");
 
     }
 
@@ -53,11 +87,25 @@ public class AccountConfirmationService {
             responseDTO.setStatus("OK");
             responseDTO.setMessage("Account Confirmed successfully");
 
+            confirmationTokenRepository.delete(confirmationToken.get());
+
             return responseDTO;
 
         }
 
         throw new InvalidConfirmationToken("Token has expired or is invalid");
+    }
+
+    private void sendTokenEmail(ConfirmationToken confirmationToken)
+    {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setTo(confirmationToken.getUser().getEmail());
+        mailMessage.setSubject("Complete Registration on SHMAFAER");
+        mailMessage.setText(CLIENT_BASE_URL + CONFIRM_ACCOUNT_PATH + "?token=" + confirmationToken.getToken());
+
+        emailService.sendMail(mailMessage);
+
     }
 
     private void enableAccount(AppUser user)
