@@ -37,12 +37,9 @@ public class UserController {
     public ResponseEntity<Object> createUser(@Valid @RequestBody RegisterUserDTO newUser)
             throws InvalidStudentID, UserAlreadyExists
     {
-        //RegisterResponseDTO response = userService.saveNewUser(newUser);
+        RegisterResponseDTO response = userService.saveNewUser(newUser);
 
-        //return new ResponseEntity<>(response, HttpStatus.OK);
-        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
