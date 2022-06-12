@@ -1,11 +1,16 @@
 package com.licenta.shmafaerserver.controller;
 
+import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
 import com.licenta.shmafaerserver.dto.request.UpdateUserRolesDTO;
 import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
 import com.licenta.shmafaerserver.dto.response.MinimalUserDetailsDTO;
+import com.licenta.shmafaerserver.dto.response.RegisterResponseDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
+import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
+import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
+import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
 import com.licenta.shmafaerserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -25,6 +32,19 @@ import java.util.List;
 @Slf4j
 public class UserController {
     private final UserService userService;
+
+    @PostMapping("/createUser")
+    public ResponseEntity<Object> createUser(@Valid @RequestBody RegisterUserDTO newUser)
+            throws InvalidStudentID, UserAlreadyExists
+    {
+        //RegisterResponseDTO response = userService.saveNewUser(newUser);
+
+        //return new ResponseEntity<>(response, HttpStatus.OK);
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
 
     @GetMapping("/liveSearch")
     public ResponseEntity<Object> liveSearchUser(@RequestParam(name = "namePattern") String namePattern,

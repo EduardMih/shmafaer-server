@@ -10,6 +10,7 @@ import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.service.accountconfirmation.AccountConfirmationService;
+import com.licenta.shmafaerserver.service.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,13 +26,14 @@ public class RegisterService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final AccountConfirmationService accountConfirmationService;
     private final UserConverter userConverter;
+    private final UserUtils userUtils;
 
     public RegisterResponseDTO registerNewUser(RegisterUserDTO newUserDTO) throws UserAlreadyExists, InvalidRegisterRole, InvalidStudentID
     {
         AppUser user;
         RegisterResponseDTO responseDTO = new RegisterResponseDTO();
 
-        validateRegisterDTO(newUserDTO);
+        userUtils.validateRegisterDTO(newUserDTO);
 
         user = userConverter.convertRegisterUserDTOToEntity(newUserDTO);
         user.setPassword(passwordEncoder.encode(newUserDTO.getPassword()));
@@ -47,6 +49,7 @@ public class RegisterService {
 
     }
 
+    /*
     private void validateRegisterDTO(RegisterUserDTO newUserDTO) throws UserAlreadyExists, InvalidRegisterRole, InvalidStudentID
     {
         if(userRepository.existsByEmail(newUserDTO.getEmail()))
@@ -87,4 +90,6 @@ public class RegisterService {
         return true;
 
     }
+
+     */
 }

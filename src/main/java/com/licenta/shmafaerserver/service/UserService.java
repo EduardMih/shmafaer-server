@@ -1,21 +1,28 @@
 package com.licenta.shmafaerserver.service;
 
 import com.licenta.shmafaerserver.converter.UserConverter;
+import com.licenta.shmafaerserver.dto.request.RegisterUserDTO;
 import com.licenta.shmafaerserver.dto.request.UpdateUserRolesDTO;
 import com.licenta.shmafaerserver.dto.response.GetUsersResponseDTO;
 import com.licenta.shmafaerserver.dto.response.MinimalUserDetailsDTO;
+import com.licenta.shmafaerserver.dto.response.RegisterResponseDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
+import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidStudentID;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidUserRole;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UnknownUserEmail;
+import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.Role;
 import com.licenta.shmafaerserver.model.enums.ERole;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.repository.RoleRepository;
+import com.licenta.shmafaerserver.service.accountconfirmation.AccountConfirmationService;
+import com.licenta.shmafaerserver.service.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,11 +35,39 @@ public class UserService {
     private final AppUserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserConverter userConverter;
+    private final PasswordEncoder passwordEncoder;
 
+    private final AccountConfirmationService accountConfirmationService;
+    private final UserUtils userUtils;
+
+    /*
     public AppUser save(AppUser user)
     {
 
         return userRepository.save(user);
+
+    }
+
+     */
+
+    public RegisterResponseDTO saveNewUser(RegisterUserDTO newUser) throws UserAlreadyExists, InvalidStudentID
+    {
+        AppUser user;
+        RegisterResponseDTO responseDTO = new RegisterResponseDTO();
+
+        userUtils.validateAdminCreateUser(newUser);
+
+        user = userConverter.convertRegisterUserDTOToEntity(newUser);
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        user = userRepository.save(user);
+
+        accountConfirmationService.sendConfirmToken(user);
+
+        responseDTO.setFirstname(user.getFirstname());
+        responseDTO.setLastname(user.getLastname());
+        responseDTO.setMessage("Success");
+
+        return responseDTO;
 
     }
 
