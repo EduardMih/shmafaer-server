@@ -2,6 +2,7 @@ package com.licenta.shmafaerserver.repository;
 
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.model.Project;
+import com.licenta.shmafaerserver.model.enums.EProjectStatus;
 import com.licenta.shmafaerserver.model.enums.EProjectType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
                            @Param("title") String title,
                            @Param("projectType") EProjectType projectType,
                            Pageable pageable);
+
+    Long countByProjectTypeName(EProjectType projectType);
+    Long countByProjectTypeNameAndStatusName(EProjectType projectType, EProjectStatus status);
 
 
 }
