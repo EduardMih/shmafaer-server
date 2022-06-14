@@ -1,9 +1,7 @@
 package com.licenta.shmafaerserver.service.recommendation;
 
-import com.licenta.shmafaerserver.converter.RecommendationConverter;
 import com.licenta.shmafaerserver.dto.github.ItemSimplifiedDTO;
 import com.licenta.shmafaerserver.dto.github.SearchResultSimplifiedDTO;
-import com.licenta.shmafaerserver.model.Recommendation;
 import com.licenta.shmafaerserver.service.github.GithubSearchService;
 import com.licenta.shmafaerserver.service.softwareheritage.ArchivingService;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +22,23 @@ public class RecommendationSystem {
     public List<ItemSimplifiedDTO> getTextRelatedRecommendation(String text)
     {
         List<ItemSimplifiedDTO> recommendations = new ArrayList<>();
+        List<ItemSimplifiedDTO> temp;
         Integer page = 1;
         Integer per_page = 10;
 
 
         while(recommendations.size() < RECOMMENDATION_COUNT)
         {
-            recommendations.addAll(getPerPageRecommendation(text, per_page, page));
+            temp = getPerPageRecommendation(text, per_page, page);
+            if(temp.isEmpty())
+            {
+                break;
+            }
+            recommendations.addAll(temp);
             page = page + 1;
         }
 
-        return recommendations;
+        return recommendations.subList(0, Math.min(RECOMMENDATION_COUNT, recommendations.size()));
 
     }
 
@@ -51,10 +55,23 @@ public class RecommendationSystem {
             System.out.println(item.getHtml_url());
         }
 
+        /*
         recommendations = githubResult.getItems().stream().filter(
                 item -> archivingService.isArchivedBySH(item.getHtml_url())).collect(Collectors.toList());
 
+         */
+
+        recommendations = filterArchivedRepos(githubResult);
+
         return recommendations;
+
+    }
+
+    private List<ItemSimplifiedDTO> filterArchivedRepos(SearchResultSimplifiedDTO githubResult)
+    {
+
+        return githubResult.getItems().stream().filter(
+                item -> archivingService.isArchivedBySH(item.getHtml_url())).collect(Collectors.toList());
 
     }
 }

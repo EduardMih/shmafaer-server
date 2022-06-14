@@ -22,6 +22,7 @@ public class RecommendationServiceFacade {
         AppUser user = getCurrentAuthenticatedUser();
 
         recommendationTaskService.createTask(user, text);
+
     }
 
     public GetRecommendationsDTO getUserRecommendations(Pageable pageable) throws UnknownUserEmail

@@ -24,10 +24,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RecommendationService {
+    private static final int MAX_USER_RECOMMENDATIONS_COUNT = 20;
+
     private final RecommendationSystem recommendationSystem;
     private final RecommendationRepository recommendationRepository;
     private final RecommendationConverter recommendationConverter;
-    private final AppUserRepository userRepository;
 
     public void createRecommendations(AppUser user, String text)
     {
@@ -45,6 +46,7 @@ public class RecommendationService {
             result.add(temp);
         }
         recommendationRepository.saveAll(result);
+        clearOldRecommendations(user);
     }
 
     public GetRecommendationsDTO getRecommendations(AppUser user, Pageable page)
@@ -68,5 +70,17 @@ public class RecommendationService {
 
         return response;
 
+    }
+
+    public void clearOldRecommendations(AppUser user)
+    {
+        Long count = recommendationRepository.countByUser(user);
+        List<Recommendation> toBeDeleted;
+
+        if(count > MAX_USER_RECOMMENDATIONS_COUNT)
+        {
+            toBeDeleted = recommendationRepository.findTop10ByUserOrderByCreatedAtAsc(user);
+            recommendationRepository.deleteAll(toBeDeleted);
+        }
     }
 }
