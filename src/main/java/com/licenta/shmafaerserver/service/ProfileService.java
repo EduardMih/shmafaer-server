@@ -9,8 +9,8 @@ import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
 import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.security.AuthenticationFacade;
-import com.licenta.shmafaerserver.security.jwt.JwtUtils;
 import com.licenta.shmafaerserver.security.service.RefreshTokenService;
+import com.licenta.shmafaerserver.service.accountconfirmation.AccountConfirmationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -29,6 +29,7 @@ public class ProfileService {
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
+    private final AccountConfirmationService accountConfirmationService;
 
     @Transactional
     public UserDetailsDTO updateUserInfo(UpdateUserInfoDTO updatedUserInfo) throws UserAlreadyExists
@@ -47,7 +48,8 @@ public class ProfileService {
             {
                 throw new UserAlreadyExists();
             }
-            currentUser.setEmail(updatedUserInfo.getEmail());
+            //currentUser.setEmail(updatedUserInfo.getEmail());
+            updateEmail(currentUser, updatedUserInfo.getEmail());
         }
 
         if((updatedUserInfo.getFirstname() != null) &&
@@ -97,13 +99,12 @@ public class ProfileService {
 
     }
 
-    /*
-    private JwtResponseDTO reLoginUser()
+    private void updateEmail(AppUser user, String email)
     {
+        user.setEmail(email);
+        user.setEnabled(false);
+        user = userRepository.save(user);
 
+        accountConfirmationService.sendConfirmToken(user);
     }
-
-     */
-
-
 }

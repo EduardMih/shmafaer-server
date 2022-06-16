@@ -53,7 +53,7 @@ public class AccountConfirmationService {
     {
         ConfirmAccountResponseDTO responseDTO = new ConfirmAccountResponseDTO();
         Optional<ConfirmationToken> tokenOptional = confirmationTokenRepository.findByToken(confirmAccountDTO.getToken());
-        ConfirmationToken token = new ConfirmationToken();
+        ConfirmationToken token;
 
 
         if((tokenOptional.isPresent()) && (tokenOptional.get().getExpiryDate().isBefore(LocalDateTime.now())))
