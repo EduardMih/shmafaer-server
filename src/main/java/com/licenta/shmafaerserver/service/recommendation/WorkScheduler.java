@@ -22,6 +22,7 @@ public class WorkScheduler {
     {
         List<RecommendationTask> tasks;
         Worker worker;
+        boolean added;
 
         log.info(Thread.currentThread().getName() + new Date());
 
@@ -30,8 +31,12 @@ public class WorkScheduler {
         for(RecommendationTask task: tasks)
         {
             worker = new Worker(task, recommendationService);
-            workerExecutor.addTask(worker);
-            recommendationTaskService.markTaskAsProcessed(task);
+            added = workerExecutor.addTask(worker);
+            if(added)
+            {
+                recommendationTaskService.markTaskAsProcessed(task);
+                log.info("Task " + task.getText() + "added successfully");
+            }
         }
     }
 }

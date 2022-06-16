@@ -13,16 +13,22 @@ import java.util.concurrent.RejectedExecutionException;
 public class WorkerExecutor {
     private final ThreadPoolTaskExecutor executor;
 
-    public void addTask(Runnable worker)
+    public boolean addTask(Runnable worker)
     {
         try
         {
             executor.execute(worker);
+
+            return true;
+
             //executor.submit();
         }
         catch(RejectedExecutionException e)
         {
             log.error(e.getMessage());
+
+            return false;
+
         }
     }
 }
