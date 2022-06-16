@@ -3,7 +3,6 @@ package com.licenta.shmafaerserver.service;
 import com.licenta.shmafaerserver.converter.UserConverter;
 import com.licenta.shmafaerserver.dto.request.ChangePasswordDTO;
 import com.licenta.shmafaerserver.dto.request.UpdateUserInfoDTO;
-import com.licenta.shmafaerserver.dto.response.JwtResponseDTO;
 import com.licenta.shmafaerserver.dto.response.UserDetailsDTO;
 import com.licenta.shmafaerserver.exception.CustomExceptions.InvalidOldPassword;
 import com.licenta.shmafaerserver.exception.CustomExceptions.UserAlreadyExists;
@@ -11,12 +10,10 @@ import com.licenta.shmafaerserver.model.AppUser;
 import com.licenta.shmafaerserver.repository.AppUserRepository;
 import com.licenta.shmafaerserver.security.AuthenticationFacade;
 import com.licenta.shmafaerserver.security.jwt.JwtUtils;
-import com.licenta.shmafaerserver.security.service.UserDetailsImpl;
+import com.licenta.shmafaerserver.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +28,7 @@ public class ProfileService {
     private final AuthenticationFacade authenticationFacade;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
-    private final LoginService loginService;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public UserDetailsDTO updateUserInfo(UpdateUserInfoDTO updatedUserInfo) throws UserAlreadyExists
@@ -68,9 +64,7 @@ public class ProfileService {
             currentUser.setLastname(updatedUserInfo.getLastname());
         }
 
-        //((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setEmail(currentUser.getEmail());
-        //System.out.println(loginService.generateJWTResponse(SecurityContextHolder.getContext().getAuthentication()).getJwtToken());
-
+        refreshTokenService.deleteToken(currentUser.getEmail());
 
         return userConverter.convertAppUserToDetailsDTO(currentUser);
 
@@ -89,6 +83,8 @@ public class ProfileService {
         }
 
         currentUser.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword()));
+
+        refreshTokenService.deleteToken(currentUser.getEmail());
 
         return userConverter.convertAppUserToDetailsDTO(currentUser);
 

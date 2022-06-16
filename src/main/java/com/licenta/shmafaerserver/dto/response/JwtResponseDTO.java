@@ -10,6 +10,7 @@ import java.util.Set;
 @AllArgsConstructor @NoArgsConstructor @Setter @Getter
 public class JwtResponseDTO {
     private String jwtToken;
+    private String refreshToken;
     private String firstname;
     private String lastname;
     private String email;
