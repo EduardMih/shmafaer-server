@@ -12,8 +12,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecommendationTaskService {
-
-    private final ThreadPoolTaskExecutor executor;
     private final RecommendationTaskRepository recommendationTaskRepository;
 
     public void createTask(AppUser user, String text)
