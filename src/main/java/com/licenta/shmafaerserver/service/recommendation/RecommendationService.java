@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RecommendationService {
-    private static final int MAX_USER_RECOMMENDATIONS_COUNT = 20;
+    private static final int MAX_USER_RECOMMENDATIONS_COUNT = 100;
 
     private final RecommendationSystem recommendationSystem;
     private final RecommendationRepository recommendationRepository;

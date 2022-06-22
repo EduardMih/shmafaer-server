@@ -252,9 +252,10 @@ public class ProjectService {
         AppUser collaborator = userRepository.findAppUserByEmail(contributorEmail).orElse(null);
         AppUser coordinator = userRepository.findAppUserByEmail(coordinatorEmail).orElse(null);
 
-        if((titlePattern != null) && (titlePattern.length() > 3))
+        if((titlePattern != null) && (titlePattern.length() > 3) && (pageable.getPageNumber() == 0))
         {
             recommendationFacade.createRecommendationTask(titlePattern);
+            //System.out.println("Recom " + titlePattern);
         }
 
         return buildGetProjectsResponseDTO(projectRepository.customFindProject(collaborator, coordinator, titlePattern, type, pageable));
