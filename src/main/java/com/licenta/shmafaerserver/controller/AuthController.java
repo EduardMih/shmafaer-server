@@ -28,13 +28,6 @@ public class AuthController {
                                         HttpServletResponse response)
     {
         JwtResponseDTO jwtResponseDTO = authService.loginUser(userConverter.convertLoginRequestDTOToEntity(loginRequestDTO));
-        //Cookie cookie = new Cookie("jwtToken", jwtResponseDTO.getJwtToken());
-
-        //cookie.setHttpOnly(true);
-        //cookie.setMaxAge(7 * 24 * 60 * 60);
-        //cookie.setPath("/");
-
-        //response.addCookie(cookie);
 
         return new ResponseEntity<>(jwtResponseDTO, HttpStatus.OK);
 

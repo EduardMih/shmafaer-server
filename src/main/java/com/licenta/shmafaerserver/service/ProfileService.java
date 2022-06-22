@@ -38,8 +38,6 @@ public class ProfileService {
                 authenticationFacade.getAuthenticatedUser().getEmail())
                 .orElseThrow(UnknownError::new);
 
-        Authentication newAuth;
-
         if((updatedUserInfo.getEmail() != null) &&
                 (updatedUserInfo.getEmail().trim().length() > 0) &&
                 (!Objects.equals(updatedUserInfo.getEmail(), currentUser.getEmail())))
@@ -48,7 +46,6 @@ public class ProfileService {
             {
                 throw new UserAlreadyExists();
             }
-            //currentUser.setEmail(updatedUserInfo.getEmail());
             updateEmail(currentUser, updatedUserInfo.getEmail());
         }
 

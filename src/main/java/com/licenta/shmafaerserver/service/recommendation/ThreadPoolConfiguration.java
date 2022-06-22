@@ -21,7 +21,5 @@ public class ThreadPoolConfiguration {
 
         return threadPoolTaskExecutor;
 
-
     }
-
 }

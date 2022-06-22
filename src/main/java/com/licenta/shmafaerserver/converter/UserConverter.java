@@ -81,8 +81,4 @@ public class UserConverter {
         return modelMapper.map(user, MinimalUserDetailsDTO.class);
 
     }
-
-
-
-
 }

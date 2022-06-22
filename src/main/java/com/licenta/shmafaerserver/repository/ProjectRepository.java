@@ -26,7 +26,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
             "AND (:collaborator is null OR :collaborator member p.collaborators OR p.owner = :collaborator) " +
             "AND (:projectType is null OR p.projectType.name = :projectType)" +
             "AND (:coordinator is null OR p.coordinator = :coordinator)")
-    Page<Project> findThat(@Param("collaborator") AppUser collaborator,
+    Page<Project> customFindProject(@Param("collaborator") AppUser collaborator,
                            @Param("coordinator") AppUser coordinator,
                            @Param("title") String title,
                            @Param("projectType") EProjectType projectType,

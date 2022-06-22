@@ -48,18 +48,10 @@ public class RecommendationSystem {
         List<ItemSimplifiedDTO> recommendations;
         SearchResultSimplifiedDTO githubResult = githubSearchService.searchRepos(text, per_page, page);
 
-        //System.out.println("Inter: " + githubResult.getTotal_count());
-
         for(ItemSimplifiedDTO item: githubResult.getItems())
         {
             System.out.println(item.getHtml_url());
         }
-
-        /*
-        recommendations = githubResult.getItems().stream().filter(
-                item -> archivingService.isArchivedBySH(item.getHtml_url())).collect(Collectors.toList());
-
-         */
 
         recommendations = filterArchivedRepos(githubResult);
 

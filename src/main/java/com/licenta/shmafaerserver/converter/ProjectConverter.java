@@ -50,16 +50,6 @@ public class ProjectConverter {
             throw new UnknownProjectType();
         }
 
-        /*
-
-        if(newProject.getOwnerEmail() != null)
-        {
-            project.setOwner(userRepository.findAppUserByEmail(newProject.getOwnerEmail())
-                    .orElseThrow(UnknownUserEmail::new));
-        }
-
-         */
-
         if(newProject.getCoordinatorEmail() != null)
         {
             project.setCoordinator(userRepository.findAppUserByEmail(newProject.getCoordinatorEmail())
@@ -68,7 +58,6 @@ public class ProjectConverter {
 
         if(newProject.getCollaboratorsEmail() != null)
         {
-            //project.getCollaborators().clear();
             for(String collaboratorEmail: newProject.getCollaboratorsEmail())
             {
                 project.getCollaborators().add(userRepository.findAppUserByEmail(collaboratorEmail)
@@ -93,19 +82,6 @@ public class ProjectConverter {
 
         typeMap.addMappings(mapper -> mapper.skip(ProjectDataDTO::setProjectType));
         typeMap.addMappings(mapper -> mapper.skip(ProjectDataDTO::setStatus));
-
-        /*
-        typeMap.addMappings(mapper -> mapper.map(
-                src -> src.getProjectType().getName().name(),
-                ProjectDataDTO::setProjectType
-        ));
-
-        typeMap.addMappings(mapper -> mapper.map(
-                src -> src.getStatus().getName().name(),
-                ProjectDataDTO::setStatus
-        ));
-        */
-
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 

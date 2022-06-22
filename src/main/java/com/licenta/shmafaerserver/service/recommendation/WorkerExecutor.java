@@ -21,7 +21,6 @@ public class WorkerExecutor {
 
             return true;
 
-            //executor.submit();
         }
         catch(RejectedExecutionException e)
         {

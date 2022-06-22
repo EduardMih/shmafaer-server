@@ -48,48 +48,4 @@ public class RegisterService {
         return responseDTO;
 
     }
-
-    /*
-    private void validateRegisterDTO(RegisterUserDTO newUserDTO) throws UserAlreadyExists, InvalidRegisterRole, InvalidStudentID
-    {
-        if(userRepository.existsByEmail(newUserDTO.getEmail()))
-        {
-            throw new UserAlreadyExists();
-        }
-
-        if(!checkRoles(newUserDTO))
-        {
-            throw new InvalidRegisterRole();
-        }
-
-        if(!checkStudentID(newUserDTO))
-        {
-
-            throw new InvalidStudentID();
-
-        }
-
-    }
-
-    private boolean checkRoles(RegisterUserDTO newUserDTO)
-    {
-
-        return (Objects.equals(newUserDTO.getRoleName(), ERole.USER.name())) || (Objects.equals(newUserDTO.getRoleName(), ERole.STUDENT.name()));
-
-    }
-
-    private boolean checkStudentID(RegisterUserDTO newUserDTO)
-    {
-        if(Objects.equals(newUserDTO.getRoleName(), ERole.STUDENT.name()))
-        {
-
-            return (newUserDTO.getInstitutionalID() != null) && (newUserDTO.getInstitutionalID().startsWith("310"));
-
-        }
-
-        return true;
-
-    }
-
-     */
 }

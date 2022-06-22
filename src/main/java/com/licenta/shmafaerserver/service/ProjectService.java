@@ -54,9 +54,6 @@ public class ProjectService {
         Project project;
         UserDetailsImpl authenticatedUser = (UserDetailsImpl) authenticationFacade.getAuthenticatedUser();
 
-        // project owner is the user adding the project
-        //newProject.setOwnerEmail(authenticatedUser.getEmail());
-
         preValidateProjectDTO(newProject);
 
         if(checkRepoLinkExists(newProject.getRepoLink()))
@@ -105,13 +102,6 @@ public class ProjectService {
 
     private void preValidateProjectDTO(AddProjectDTO newProject) throws InvalidProjectStructure
     {
-        /*
-        if(projectRepository.existsByRepoLink(newProject.getRepoLink()))
-        {
-            throw new ProjectLinkAlreadyExists();
-        }
-         */
-
         if((Objects.equals(newProject.getProjectType(), EProjectType.BACHELOR.name())) ||
                 (Objects.equals(newProject.getProjectType(), EProjectType.MASTERY.name())) ||
                 (Objects.equals(newProject.getProjectType(), EProjectType.DOCTORAL.name())))
@@ -258,34 +248,6 @@ public class ProjectService {
                                         String contributorEmail, String projectType, Pageable pageable)
             throws UnknownUserEmail, UnknownProjectType
     {
-
-        /*
-        EProjectType type = projectSearchUtils.getTypeName(projectType);
-        Specification<Project> specification;
-        Page<Project> projectsPage;
-
-
-
-        if(type == EProjectType.RESEARCH)
-        {
-            specification = ProjectSearchUtils.buildResearchProjectSpec(titlePattern, contributorEmail);
-
-            projectsPage = projectRepository.findAll(specification, pageable);
-
-            return buildGetProjectsResponseDTO(projectsPage);
-
-        }
-
-        else
-        {
-
-            specification = ProjectSearchUtils.buildSchoolProjectSpec(titlePattern, contributorEmail, coordinatorEmail, type);
-            projectsPage = projectRepository.findAll(specification, pageable);
-
-            return buildGetProjectsResponseDTO(projectsPage);
-
-        }
-        */
         EProjectType type = projectSearchUtils.getTypeName(projectType);
         AppUser collaborator = userRepository.findAppUserByEmail(contributorEmail).orElse(null);
         AppUser coordinator = userRepository.findAppUserByEmail(coordinatorEmail).orElse(null);
@@ -295,7 +257,7 @@ public class ProjectService {
             recommendationFacade.createRecommendationTask(titlePattern);
         }
 
-        return buildGetProjectsResponseDTO(projectRepository.findThat(collaborator, coordinator, titlePattern, type, pageable));
+        return buildGetProjectsResponseDTO(projectRepository.customFindProject(collaborator, coordinator, titlePattern, type, pageable));
 
     }
 }

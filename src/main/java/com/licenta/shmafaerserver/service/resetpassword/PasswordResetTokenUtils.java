@@ -26,6 +26,4 @@ public class PasswordResetTokenUtils {
     {
         token.setExpiryDate(LocalDateTime.now().plusHours(EXPIRY_RANGE_HOURS));
     }
-
-
 }

@@ -18,5 +18,4 @@ public class EmailService {
         System.out.println("Sending mail...");
         System.out.println(email.getText());
     }
-
 }

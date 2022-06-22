@@ -28,8 +28,7 @@ public class ProjectController {
 
     @PostMapping()
     public ResponseEntity<Object> addProject(@Valid @RequestBody AddProjectDTO newProject)
-            throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
-    {
+            throws UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists {
         projectService.saveProject(newProject);
 
         return new ResponseEntity<>(new SuccessResponse("Project created successfully"), HttpStatus.CREATED);
@@ -40,16 +39,14 @@ public class ProjectController {
     @PutMapping("/{projectID}")
     public ResponseEntity<Object> updateProject(@Valid @RequestBody AddProjectDTO updatedProject,
                                                 @PathVariable Long projectID)
-            throws UnknownProjectID, UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists
-    {
+            throws UnknownProjectID, UnknownProjectType, UnknownUserEmail, InvalidProjectStructure, ProjectLinkAlreadyExists {
 
         return new ResponseEntity<>(projectService.updateProject(updatedProject, projectID), HttpStatus.OK);
 
     }
 
     @GetMapping("/{projectID}")
-    public ResponseEntity<Object> getProjectByID(@PathVariable("projectID") Long projectID) throws UnknownProjectID
-    {
+    public ResponseEntity<Object> getProjectByID(@PathVariable("projectID") Long projectID) throws UnknownProjectID {
 
         return new ResponseEntity<>(projectService.getProjectByID(projectID), HttpStatus.OK);
 
@@ -57,8 +54,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<Object> getProject(@RequestParam(name = "page", defaultValue = "0") int page,
-                                             @RequestParam(name = "size", defaultValue = "3") int size)
-    {
+                                             @RequestParam(name = "size", defaultValue = "3") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         GetProjectsResponseDTO result = projectService.getProjects(pageable);
@@ -72,27 +68,17 @@ public class ProjectController {
     public ResponseEntity<Object> getUserProjects(@RequestParam(name = "page", defaultValue = "0") int page,
                                                   @RequestParam(name = "size", defaultValue = "3") int size,
                                                   @RequestParam(name = "coordinated", defaultValue = "false", required = false) boolean coordinated,
-                                                  @RequestParam(name = "collaborated", defaultValue = "false", required = false) boolean collaborated)
-    {
+                                                  @RequestParam(name = "collaborated", defaultValue = "false", required = false) boolean collaborated) {
         Pageable pageable = PageRequest.of(page, size);
         GetProjectsResponseDTO result;
 
-        if(coordinated)
-        {
+        if (coordinated) {
             result = projectService.getCoordinatedProjects(pageable);
-        }
+        } else {
 
-        else
-        {
-
-            if (collaborated)
-            {
+            if (collaborated) {
                 result = projectService.getCollaboratedProjects(pageable);
-            }
-
-            else
-
-            {
+            } else {
 
                 result = projectService.getUserProjects(pageable);
 
@@ -111,9 +97,8 @@ public class ProjectController {
                                                  @RequestParam(name = "coordinator", required = false) String coordinatorEmail,
                                                  @RequestParam(name = "contributor", required = false) String contributorEmail,
                                                  @RequestParam(name = "projectType", defaultValue = "ALL", required = false) String projectType
-                                                 )
-            throws UnknownProjectType, UnknownUserEmail
-    {
+    )
+            throws UnknownProjectType, UnknownUserEmail {
         Pageable pageable = PageRequest.of(page, size);
 
         return new ResponseEntity<>(projectService.searchProjects(titlePattern, coordinatorEmail, contributorEmail, projectType, pageable), HttpStatus.OK);
@@ -122,26 +107,23 @@ public class ProjectController {
 
     @GetMapping("/archive")
     public ResponseEntity<Object> getArchivingStatus(@RequestParam("projectRepoLink") String projectRepoLink)
-            throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException
-    {
+            throws UnknownProjectRepoLink, SoftwareHeritageCommunicationException {
 
-      return new ResponseEntity<>(projectService.updateArchivingStatus(projectRepoLink), HttpStatus.OK);
+        return new ResponseEntity<>(projectService.updateArchivingStatus(projectRepoLink), HttpStatus.OK);
 
     }
 
     @PreAuthorize("@customAuthorizationService.canSendToSH(#projectRepoLink)")
     @PostMapping("/archive")
     public ResponseEntity<Object> archiveProject(@RequestParam("projectRepoLink") String projectRepoLink)
-            throws SoftwareHeritageCommunicationException, UnknownProjectRepoLink
-    {
+            throws SoftwareHeritageCommunicationException, UnknownProjectRepoLink {
 
         return new ResponseEntity<>(projectService.archiveProject(projectRepoLink), HttpStatus.OK);
 
     }
 
     @GetMapping("/archive/download")
-    public ResponseEntity<Object> downloadProject(@RequestParam String projectRepoLink) throws SoftwareHeritageCommunicationException
-    {
+    public ResponseEntity<Object> downloadProject(@RequestParam String projectRepoLink) throws SoftwareHeritageCommunicationException {
         DownloadResponseDTO response = archivingService.getDownloadInfo(projectRepoLink);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

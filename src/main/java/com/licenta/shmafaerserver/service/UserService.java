@@ -40,16 +40,6 @@ public class UserService {
     private final AccountConfirmationService accountConfirmationService;
     private final UserUtils userUtils;
 
-    /*
-    public AppUser save(AppUser user)
-    {
-
-        return userRepository.save(user);
-
-    }
-
-     */
-
     public RegisterResponseDTO saveNewUser(RegisterUserDTO newUser) throws UserAlreadyExists, InvalidStudentID
     {
         AppUser user;

@@ -37,35 +37,4 @@ public class RecommendationTaskService {
         task.setProcessed(true);
         recommendationTaskRepository.save(task);
     }
-
-    public void addTasksFromDB()
-    {
-        List<RecommendationTask> tasks = readTasks();
-
-        /*
-        for(RecommendationTask task: tasks)
-        {
-            try
-            {
-                executor.execute(() -> {
-                    try
-                    {
-                        Thread.sleep(1000);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        System.out.println(e.getMessage());
-                    }
-                    System.out.println(Thread.currentThread().getName() + new Date() + "->" + task.getText());
-                });
-            }
-            catch (RejectedExecutionException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-         */
-
-
-    }
 }

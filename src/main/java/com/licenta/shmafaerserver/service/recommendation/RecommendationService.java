@@ -51,14 +51,6 @@ public class RecommendationService {
 
     public GetRecommendationsDTO getRecommendations(AppUser user, Pageable page)
     {
-        /*
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        AppUser user = userRepository.findAppUserByEmail(userDetails.getEmail()).orElseThrow(UnknownUserEmail::new);
-
-         */
-
         Page<Recommendation> recommendationPage = recommendationRepository.findAllByUserOrderByCreatedAtDesc(user, page);
         List<Recommendation> result = recommendationPage.getContent();
         GetRecommendationsDTO response = new GetRecommendationsDTO();
