@@ -15,7 +15,7 @@ public class JwtUtils {
     private String jwtSecret;
 
     //@Value("${shmafaer.app.jwtExpirationMs}")
-    private int jwtExpirationMs = 1000 * 10;
+    private int jwtExpirationMs = 1000 * 60 * 15;
 
     public String generateJWTToken(Authentication authentication)
     {

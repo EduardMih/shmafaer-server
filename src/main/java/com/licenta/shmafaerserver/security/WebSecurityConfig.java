@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,15 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //http.authorizeRequests()
-          //      .antMatchers("/test").permitAll()
-            //    .anyRequest().authenticated()
-              //  .and()
-                //.formLogin()
-                //.permitAll()
-                //.and()
-                //.logout()
-                //.permitAll();
 
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
@@ -56,8 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resetPassword/**").permitAll()
                 //.antMatchers("/projects/**").permitAll()
                 .antMatchers("/users/createUser").hasAuthority("ADMIN")
+                .antMatchers("/users/update/roles").hasAuthority("ADMIN")
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/test/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/projects").hasAnyAuthority("STUDENT", "PROFESSOR", "ADMIN")
                 .antMatchers("/projectsStats/**").authenticated()
                 //.antMatchers("/ratings/**").permitAll()
                 .anyRequest().authenticated();

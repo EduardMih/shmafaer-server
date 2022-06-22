@@ -129,6 +129,7 @@ public class ProjectController {
 
     }
 
+    @PreAuthorize("@customAuthorizationService.canSendToSH(#projectRepoLink)")
     @PostMapping("/archive")
     public ResponseEntity<Object> archiveProject(@RequestParam("projectRepoLink") String projectRepoLink)
             throws SoftwareHeritageCommunicationException, UnknownProjectRepoLink
