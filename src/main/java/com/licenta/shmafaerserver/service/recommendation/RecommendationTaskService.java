@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,8 +21,13 @@ public class RecommendationTaskService {
 
         recommendationTask.setUser(user);
         recommendationTask.setText(text);
+        recommendationTask.setCreatedAt(LocalDateTime.now());
 
-        recommendationTaskRepository.save(recommendationTask);
+        if(!checkAlreadyExists(user, text))
+        {
+            recommendationTaskRepository.save(recommendationTask);
+            //System.out.println("Recom" + recommendationTask.getText());
+        }
 
     }
 
@@ -36,5 +42,13 @@ public class RecommendationTaskService {
     {
         task.setProcessed(true);
         recommendationTaskRepository.save(task);
+    }
+
+    private boolean checkAlreadyExists(AppUser user, String text)
+    {
+        List<RecommendationTask> temp = recommendationTaskRepository.check(user, text, LocalDateTime.now().minusHours(2));
+
+        return temp != null && !temp.isEmpty();
+
     }
 }

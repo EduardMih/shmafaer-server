@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,4 +24,6 @@ public class RecommendationTask {
     private String text;
 
     private boolean processed = false;
+
+    private LocalDateTime createdAt;
 }
